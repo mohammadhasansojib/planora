@@ -1,54 +1,55 @@
-import express, { NextFunction } from "express";
-import { Request, Response } from "express";
+import express, {
+	type NextFunction,
+	type Request,
+	type Response,
+} from "express";
 import { prisma } from "./lib/prisma.js";
-import { sendResponse } from "./utils/sendResponse.js";
 import { AppError } from "./utils/errorFormats.js";
+import { sendResponse } from "./utils/sendResponse.js";
 
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
-    res.send("Server Running...");
+app.get("/", (_req: Request, res: Response) => {
+	res.send("Server Running...");
 });
 
-app.get("/test-prisma", async (req: Request, res: Response) => {
-    const test = await prisma.test.create({});
+app.get("/test-prisma", async (_req: Request, res: Response) => {
+	const test = await prisma.test.create({});
 
-    res.json({
-        data: test,
-    })
+	res.json({
+		data: test,
+	});
 });
-
 
 // 404 route handler
-app.use((req: Request, res: Response, next: NextFunction) => {
-    sendResponse(res, {
-        success: false,
-        message: "route not found",
-        statusCode: 404,
-        data: null,
-    });
-})
+app.use((_req: Request, res: Response, _next: NextFunction) => {
+	sendResponse(res, {
+		success: false,
+		message: "route not found",
+		statusCode: 404,
+		data: null,
+	});
+});
 
 // global error handler
-app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-    let statusCode = 500;
-    let message = "Internal Server Error";
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+	let statusCode = 500;
+	let message = "Internal Server Error";
 
-    if (err instanceof AppError) {
-        statusCode = err.statusCode;
-        message = err.message;
-    }
+	if (err instanceof AppError) {
+		statusCode = err.statusCode;
+		message = err.message;
+	}
 
-    sendResponse(res, {
-        success: false,
-        message,
-        statusCode,
-        data: null,
-    });
-})
-
+	sendResponse(res, {
+		success: false,
+		message,
+		statusCode,
+		data: null,
+	});
+});
 
 export default app;
