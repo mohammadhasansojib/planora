@@ -1,0 +1,17 @@
+enum OrganizationRole {
+  OWNER
+  ADMIN
+  MANAGER
+  MEMBER
+  GUEST
+}
+
+enum TeamRole {
+  MANAGER
+  MEMBER
+}
+
+enum ProjectRole {
+  MANAGER
+  MEMBER
+}
