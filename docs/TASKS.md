@@ -13,3 +13,4 @@
 ## Execution Order
 
 - add Biome for linting and formatting
+- Design ERD and add prisma models

@@ -3,13 +3,13 @@
 
 ## What have done
 - add biome for Linting and Formatting
+- ERD design
 
 ## Currently Working on
-- ERD design
+- Authentication (custom + GCP)
 
 ## What have left to do
 
-- Authentication (custom + GCP)
 - Core funtionality design and Business login implementation
 - Payment Integration
 - Testing
