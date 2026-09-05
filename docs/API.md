@@ -323,3 +323,68 @@
         }
     }
     ```
+
+### Task
+
+- **`POST /api/v1/tasks`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "title": "My First Task",
+        "description": "This is very important",
+        "projectId": "8c6af6af-8dba-472e-853f-81365c014f67"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Task created successfully",
+        "statusCode": 201,
+        "data": {
+            "task": {
+                "id": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                "projectId": "8c6af6af-8dba-472e-853f-81365c014f67",
+                "sprintId": null,
+                "title": "My First Task",
+                "description": "This is very important",
+                "createdAt": "2026-09-05T13:56:13.569Z",
+                "updatedAt": "2026-09-05T13:56:13.569Z"
+            }
+        }
+    }
+    ```
+
+
+- **`POST /api/v1/tasks/:taskId/assign`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "sprintId": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Task assigned successfully",
+        "statusCode": 201,
+        "data": {
+            "task": {
+                "id": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                "projectId": "8c6af6af-8dba-472e-853f-81365c014f67",
+                "sprintId": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                "title": "My First Task",
+                "description": "This is very important",
+                "createdAt": "2026-09-05T13:56:13.569Z",
+                "updatedAt": "2026-09-05T14:05:17.739Z"
+            }
+        }
+    }
+    ```
