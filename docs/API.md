@@ -162,3 +162,67 @@
         }
     }
     ```
+
+### Team
+
+- **`POST /api/v1/teams`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "name": "My Second Team",
+        "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Team created successfully",
+        "statusCode": 201,
+        "data": {
+            "team": {
+                "id": "e21ab1b8-e440-4b0d-8b36-38da9ec4621f",
+                "name": "My Second Team",
+                "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                "createdAt": "2026-09-05T09:32:02.137Z",
+                "updatedAt": "2026-09-05T09:32:02.137Z"
+            }
+        }
+    }
+    ```
+
+
+- **`POST /api/v1/teams/:teamId/members`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+        "role": "MEMBER"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Member added to team successfully",
+        "statusCode": 201,
+        "data": {
+            "member": {
+                "id": "8b2581c2-95e6-4b54-8ce9-cdf523a22552",
+                "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+                "role": "MEMBER",
+                "createdAt": "2026-09-05T09:59:40.064Z",
+                "updatedAt": "2026-09-05T09:59:40.064Z"
+            }
+        }
+    }
+    ```
+
+
