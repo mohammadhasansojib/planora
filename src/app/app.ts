@@ -7,6 +7,7 @@ import { prisma } from "./lib/prisma.js";
 import authRouter from "./module/auth/auth.route.js";
 import organizationRouter from "./module/organization/organization.route.js";
 import projectRouter from "./module/project/project.route.js";
+import sprintRouter from "./module/sprint/sprint.route.js";
 import teamRouter from "./module/team/team.route.js";
 import { AppError } from "./utils/errorFormats.js";
 import { sendResponse } from "./utils/sendResponse.js";
@@ -21,6 +22,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/organizations", organizationRouter);
 app.use("/api/v1/teams", teamRouter);
 app.use("/api/v1/projects", projectRouter);
+app.use("/api/v1/sprints", sprintRouter);
 
 app.get("/", (_req: Request, res: Response) => {
 	res.send("Server Running...");
