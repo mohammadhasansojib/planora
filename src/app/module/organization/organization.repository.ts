@@ -2,90 +2,90 @@ import { OrganizationRole } from "../../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 import type { ICreateOrganization } from "./organization.interface.js";
 
-
 class OrganizationRepo {
-    async createOrganization(payload: ICreateOrganization, userId: string) {
-        const organization = await prisma.$transaction(async (tx) => {
-            const org = await tx.organization.create({
-                data: {
-                    ...payload,
-                },
-            });
+	async createOrganization(payload: ICreateOrganization, userId: string) {
+		const organization = await prisma.$transaction(async (tx) => {
+			const org = await tx.organization.create({
+				data: {
+					...payload,
+				},
+			});
 
-            await tx.organizationMember.create({
-                data: {
-                    organizationId: org.id,
-                    userId,
-                    role: OrganizationRole.OWNER,
-                }
-            });
+			await tx.organizationMember.create({
+				data: {
+					organizationId: org.id,
+					userId,
+					role: OrganizationRole.OWNER,
+				},
+			});
 
-            return org;
-        });
+			return org;
+		});
 
-        return organization;
-    }
+		return organization;
+	}
 
-    async getUsersAllOrg(userId: string) {
-        const organizationMembers = await prisma.organizationMember.findMany({
-            where: {
-                userId,
-            },
-            include: {
-                organization: true,
-            }
-        });
+	async getUsersAllOrg(userId: string) {
+		const organizationMembers = await prisma.organizationMember.findMany({
+			where: {
+				userId,
+			},
+			include: {
+				organization: true,
+			},
+		});
 
-        const organizations = organizationMembers.map(orgMember => orgMember.organization);
+		const organizations = organizationMembers.map(
+			(orgMember) => orgMember.organization,
+		);
 
-        return organizations;
-    }
+		return organizations;
+	}
 
-    async getOrganizationById(id: string) {
-        const organization = await prisma.organization.findUnique({
-            where: {
-                id,
-            }
-        })
+	async getOrganizationById(id: string) {
+		const organization = await prisma.organization.findUnique({
+			where: {
+				id,
+			},
+		});
 
-        return organization;
-    }
+		return organization;
+	}
 
-    async getUserById(id: string) {
-        const user = await prisma.user.findUnique({
-            where: {
-                id,
-            }
-        });
+	async getUserById(id: string) {
+		const user = await prisma.user.findUnique({
+			where: {
+				id,
+			},
+		});
 
-        return user;
-    }
+		return user;
+	}
 
-    async getOrgMemberByUserandOrgId(organizationId: string, userId: string) {
-        const member = await prisma.organizationMember.findUnique({
-            where: {
-                userId_organizationId: {
-                    organizationId,
-                    userId,
-                },
-            }
-        });
+	async getOrgMemberByUserandOrgId(organizationId: string, userId: string) {
+		const member = await prisma.organizationMember.findUnique({
+			where: {
+				userId_organizationId: {
+					organizationId,
+					userId,
+				},
+			},
+		});
 
-        return member;
-    }
+		return member;
+	}
 
-    async createOrganizationMember(organizationId: string, userId: string) {
-        const member = await prisma.organizationMember.create({
-            data: {
-                organizationId,
-                userId,
-                role: OrganizationRole.MEMBER,
-            }
-        });
+	async createOrganizationMember(organizationId: string, userId: string) {
+		const member = await prisma.organizationMember.create({
+			data: {
+				organizationId,
+				userId,
+				role: OrganizationRole.MEMBER,
+			},
+		});
 
-        return member;
-    }
-
+		return member;
+	}
 }
 
 export const orgRepo = new OrganizationRepo();

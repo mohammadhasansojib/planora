@@ -46,23 +46,23 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 });
 
 const refresh = catchAsync(async (req: Request, res: Response) => {
-    const {refreshToken} = req.body;
+	const { refreshToken } = req.body;
 
-    const newAccessToken = authService.refreshToken(refreshToken);
+	const newAccessToken = authService.refreshToken(refreshToken);
 
-    sendResponse(res, {
-        success: true,
-        message: "token refreshed sucessfully",
-        statusCode: status.OK,
-        data: {
-            newAccessToken,
-        }
-    })
+	sendResponse(res, {
+		success: true,
+		message: "token refreshed sucessfully",
+		statusCode: status.OK,
+		data: {
+			newAccessToken,
+		},
+	});
 });
 
 export const authController = {
 	register,
 	login,
 	logout,
-    refresh,
+	refresh,
 };

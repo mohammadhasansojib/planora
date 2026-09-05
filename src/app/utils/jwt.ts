@@ -24,17 +24,17 @@ export const createRefreshToken = (tokenPayload: IAccessTokenPayload) => {
 };
 
 export const verifyRefreshToken = (token: string) => {
-    try {
-        const decoded = jwt.verify(token, config.REFRESH_TOKEN_SECRET);
-        
-        return decoded;
-    } catch (error) {
-        console.log(error)
-        
-        if (error instanceof Error && error.message) {
-            throw new AuthorizationError(error.message);
-        }
+	try {
+		const decoded = jwt.verify(token, config.REFRESH_TOKEN_SECRET);
 
-        throw error;
-    }
-}
+		return decoded;
+	} catch (error) {
+		console.log(error);
+
+		if (error instanceof Error && error.message) {
+			throw new AuthorizationError(error.message);
+		}
+
+		throw error;
+	}
+};

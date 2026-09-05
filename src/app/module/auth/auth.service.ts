@@ -1,6 +1,10 @@
 import { authRepo } from "./auth.repository.js";
 import bcrypt from "bcryptjs";
-import { createAccessToken, createRefreshToken, verifyRefreshToken } from "../../utils/jwt.js";
+import {
+	createAccessToken,
+	createRefreshToken,
+	verifyRefreshToken,
+} from "../../utils/jwt.js";
 import {
 	AuthorizationError,
 	ConflictError,
@@ -54,31 +58,31 @@ const loginUser = async (payload: UserLoginPayload) => {
 		email: user.email,
 	};
 	const accessToken = createAccessToken(tokenPayload);
-    const refreshToken = createRefreshToken(tokenPayload);
+	const refreshToken = createRefreshToken(tokenPayload);
 
 	return {
 		accessToken,
-        refreshToken,
+		refreshToken,
 	};
 };
 
 const refreshToken = (refreshToken: string) => {
-    const decoded = verifyRefreshToken(refreshToken) as JwtPayload;
-    if (!decoded) {
-        throw new AuthorizationError("invalid refresh token");
-    }
- 
-    const tokenPayload = {
-        id: decoded.id,
-        email: decoded.email,
-    };
-    const newAccessToken = createAccessToken(tokenPayload);
+	const decoded = verifyRefreshToken(refreshToken) as JwtPayload;
+	if (!decoded) {
+		throw new AuthorizationError("invalid refresh token");
+	}
 
-    return newAccessToken;
-}
+	const tokenPayload = {
+		id: decoded.id,
+		email: decoded.email,
+	};
+	const newAccessToken = createAccessToken(tokenPayload);
+
+	return newAccessToken;
+};
 
 export const authService = {
 	createUser,
 	loginUser,
-    refreshToken,
+	refreshToken,
 };
