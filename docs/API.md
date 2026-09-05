@@ -226,3 +226,64 @@
     ```
 
 
+### Project
+
+- **`POST /api/v1/projects`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "name": "My Second Project",
+        "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Project created successfully",
+        "statusCode": 201,
+        "data": {
+            "project": {
+                "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                "name": "My Second Project",
+                "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                "createdAt": "2026-09-05T10:27:04.447Z",
+                "updatedAt": "2026-09-05T10:27:04.447Z"
+            }
+        }
+    }
+    ```
+
+
+- **`POST /api/v1/projects/:projectId/members`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+        "role": "MEMBER"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Member added to project successfully",
+        "statusCode": 201,
+        "data": {
+            "member": {
+                "id": "b57a06d1-d7e3-4be9-804e-43161886045b",
+                "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+                "role": "MEMBER",
+                "createdAt": "2026-09-05T10:31:52.840Z",
+                "updatedAt": "2026-09-05T10:31:52.840Z"
+            }
+        }
+    }
+    ```
