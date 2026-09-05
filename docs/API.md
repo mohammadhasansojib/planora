@@ -418,3 +418,36 @@
         }
     }
     ```
+
+
+### Comment
+
+- **`POST /api/v1/comments`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "content": "This is comment content",
+        "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Comment created successfully",
+        "statusCode": 201,
+        "data": {
+            "comment": {
+                "id": "78e930dc-f6e9-4c4e-b73d-dfa321fe3fac",
+                "content": "This is comment content",
+                "userId": "acc950d1-32d4-4764-adaf-5a311f022acd",
+                "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                "createdAt": "2026-09-05T16:19:18.431Z",
+                "updatedAt": "2026-09-05T16:19:18.431Z"
+            }
+        }
+    }
+    ```
