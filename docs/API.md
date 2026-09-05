@@ -388,3 +388,33 @@
         }
     }
     ```
+
+- **`POST /api/v1/tasks/:taskId/subtasks`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "title": "First Subtask",
+        "description": "This the description of the subtask"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Subtask created successfully",
+        "statusCode": 201,
+        "data": {
+            "subtask": {
+                "id": "44bdef07-f736-4e67-acc0-f28844f7e81a",
+                "title": "First Subtask",
+                "description": "This the description of the subtask",
+                "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                "createdAt": "2026-09-05T15:10:38.493Z",
+                "updatedAt": "2026-09-05T15:10:38.493Z"
+            }
+        }
+    }
+    ```
