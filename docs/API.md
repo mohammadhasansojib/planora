@@ -76,4 +76,89 @@
     }
     ```
 
+### Organization
 
+- **`POST /api/v1/organizations`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "name": "my org"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Organization created successfully",
+        "statusCode": 201,
+        "data": {
+            "organization": {
+                "id": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                "name": "my org",
+                "createdAt": "2026-09-05T05:03:00.520Z",
+                "updatedAt": "2026-09-05T05:03:00.520Z"
+            }
+        }
+    }
+    ```
+
+- **`GET /api/v1/organizations`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "get user's organizations successfully",
+        "statusCode": 200,
+        "data": {
+            "organizations": [
+                {
+                    "id": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                    "name": "my org",
+                    "createdAt": "2026-09-05T05:03:00.520Z",
+                    "updatedAt": "2026-09-05T05:03:00.520Z"
+                }
+            ]
+        }
+    }
+    ```
+
+- **`POST /api/v1/organizations/:organizationId/members`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Member added successfully",
+        "statusCode": 201,
+        "data": {
+            "member": {
+                "id": "a04da2dd-ea35-4bac-930c-1ac76072a55f",
+                "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+                "role": "MEMBER",
+                "createdAt": "2026-09-05T05:06:33.345Z",
+                "updatedAt": "2026-09-05T05:06:33.345Z"
+            }
+        }
+    }
+    ```
