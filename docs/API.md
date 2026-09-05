@@ -287,3 +287,39 @@
         }
     }
     ```
+
+
+### Sprint
+
+- **`POST /api/v1/sprints`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "name": "My first sprint",
+        "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+        "startTime": "2026-09-05T11:46:07.779Z",
+        "endTime": "2026-09-08T11:46:07.779Z"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Sprint created successfully",
+        "statusCode": 201,
+        "data": {
+            "sprint": {
+                "id": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                "name": "My first sprint",
+                "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                "startTime": "2026-09-05T11:46:07.779Z",
+                "endTime": "2026-09-08T11:46:07.779Z",
+                "createdAt": "2026-09-05T12:05:23.873Z",
+                "updatedAt": "2026-09-05T12:05:23.873Z"
+            }
+        }
+    }
+    ```
