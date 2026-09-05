@@ -3,7 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { BadRequestError } from "../../utils/errorFormats.js";
 import { sendResponse } from "../../utils/sendResponse.js";
-import { AssignTaskToSprintSchema } from "./task.schema.js";
+import { AssignTaskToSprintSchema, CreateSubtaskSchema } from "./task.schema.js";
 import taskService from "./task.service.js";
 
 
@@ -46,8 +46,38 @@ const assignTaskToSprint = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+// subtask
+const createSubtask = catchAsync(async (req: Request, res: Response) => {
+    const { taskId } = req.params;
+
+    const validData = CreateSubtaskSchema.safeParse({
+        taskId,
+        ...req.body,
+    });
+    if (!validData.success) {
+        const errMessage = validData.error.issues.map((issue) => issue.message).join(" | ");
+        
+        throw new BadRequestError(errMessage);
+    }
+
+    const subtask = await taskService.createSubtask({
+        taskId,
+        ...req.body,
+    });
+
+    sendResponse(res, {
+        success: true,
+        message: "Subtask created successfully",
+        statusCode: status.CREATED,
+        data: {
+            subtask,
+        }
+    })
+});
+
 const taskController = {
     createTask,
     assignTaskToSprint,
+    createSubtask,
 };
 export default taskController;

@@ -1,5 +1,5 @@
 import { NotFoundError } from "../../utils/errorFormats.js";
-import type { ICreateTask } from "./task.interface.js";
+import type { ICreateSubtask, ICreateTask } from "./task.interface.js";
 import taskRepo from "./task.repository.js";
 
 const createTask = async (taskData: ICreateTask) => {
@@ -51,8 +51,22 @@ const assignTaskToSprint = async (taskId: string, sprintId: string) => {
     return updatedTask;
 }
 
+const createSubtask = async (payload: ICreateSubtask) => {
+    // check if the task exists
+    const task = await taskRepo.getTaskById(payload.taskId);
+    if (!task) {
+        throw new NotFoundError("task not found");
+    }
+
+    // create subtask
+    const subtask = await taskRepo.createSubtask(payload);
+
+    return subtask;
+}
+
 const taskService = {
     createTask,
     assignTaskToSprint,
+    createSubtask,
 };
 export default taskService;

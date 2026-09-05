@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
-import type { ICreateTask } from "./task.interface.js";
+import type { ICreateSubtask, ICreateTask } from "./task.interface.js";
 
 class TaskRepository {
     async getProjectById(projectId: string) {
@@ -48,6 +48,14 @@ class TaskRepository {
         });
 
         return updatedTask;
+    }
+
+    async createSubtask(payload: ICreateSubtask) {
+        const subtask = await prisma.subtask.create({
+            data: payload,
+        });
+
+        return subtask;
     }
 
 }

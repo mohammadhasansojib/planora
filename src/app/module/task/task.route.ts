@@ -9,5 +9,8 @@ const router = express.Router();
 router.post("/", auth(), validateRequest(CreateTaskSchema), taskController.createTask);
 router.post("/:taskId/assign", auth(), taskController.assignTaskToSprint);
 
+// subtask
+router.post("/:taskId/subtasks", auth(), taskController.createSubtask);
+
 const taskRouter = router;
 export default taskRouter;

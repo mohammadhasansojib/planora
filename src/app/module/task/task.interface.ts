@@ -7,3 +7,9 @@ export interface ICreateTask {
     sprintId?: string
     projectId: string
 }
+
+export interface ICreateSubtask {
+    title: string
+    description?: string
+    taskId: string
+}
