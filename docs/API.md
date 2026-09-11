@@ -419,6 +419,36 @@
     }
     ```
 
+- **`POST /api/v1/tasks/:taskId/attachment`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        "attachment": `file here`
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "attachment added successfully",
+        "statusCode": 200,
+        "data": {
+            "attachment": {
+                "id": "d41ca769-cb2a-4116-af99-32ab3cfb3987",
+                "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                "userId": "acc950d1-32d4-4764-adaf-5a311f022acd",
+                "fileURL": "https://res.cloudinary.com/awmp85xk/image/upload/v1789138256/uploads/y5rcmwxrp48f4bfijgff.png",
+                "createdAt": "2026-09-11T14:47:43.383Z",
+                "updatedAt": "2026-09-11T14:47:43.383Z"
+            }
+        }
+    }
+    ```
+
+
 
 ### Comment
 
