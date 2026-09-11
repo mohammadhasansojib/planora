@@ -31,6 +31,25 @@ class TaskRepository {
         return task;
     }
 
+    async getUserById(userId: string) {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+        return user;
+    }
+
+    async createTaskAttachment(fileURL: string, userId: string, taskId: string) {
+        const attachment = await prisma.attachment.create({
+            data: {
+                fileURL,
+                userId,
+                taskId,
+            }
+        });
+        
+        return attachment;
+    }
+
     async getTaskByIdWithSprintId(taskId: string, sprintId: string) {
         const task = await prisma.task.findFirst({
             where: {

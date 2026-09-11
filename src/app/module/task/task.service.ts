@@ -1,4 +1,5 @@
-import { NotFoundError } from "../../utils/errorFormats.js";
+import { uploadToCloudinary } from "../../lib/cloudinary.js";
+import { AppError, BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
 import type { ICreateSubtask, ICreateTask } from "./task.interface.js";
 import taskRepo from "./task.repository.js";
 
@@ -64,9 +65,33 @@ const createSubtask = async (payload: ICreateSubtask) => {
     return subtask;
 }
 
+const addAttachment = async (file: Express.Multer.File, taskId: string, userId: string) => {
+    // check the user exist
+    const user = await taskRepo.getUserById(userId);
+    if (!user) {
+        throw new BadRequestError("user not found");
+    }
+
+    // check the task exist
+    const task = await taskRepo.getTaskById(taskId);
+    if (!task) {
+        throw new BadRequestError("task not found");
+    }
+
+    // upload the file
+    const uploadedFile = await uploadToCloudinary(file.buffer);
+
+    // store attachment info in Database
+    const attachment = await taskRepo.createTaskAttachment(uploadedFile.secure_url, user.id, task.id);
+
+    // return the attachment info
+    return attachment;
+}
+
 const taskService = {
     createTask,
     assignTaskToSprint,
     createSubtask,
+    addAttachment,
 };
 export default taskService;

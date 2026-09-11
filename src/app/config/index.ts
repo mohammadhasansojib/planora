@@ -18,6 +18,9 @@ const envSchema = z.object({
 	REFRESH_TOKEN_EXPIRE: z.coerce
 		.number()
 		.min(1, "REFRESH_TOKEN_EXPIRE is required"),
+	CLOUDINARY_CLOUD_NAME: z.string().min(1, "CLOUDINARY_CLOUD_NAME is required"),
+	CLOUDINARY_API_KEY: z.string().min(1, "CLOUDINARY_API_KEY is required"),
+	CLOUDINARY_API_SECRET: z.string().min(1, "CLOUDINARY_API_SECRET is required"),
 });
 
 const env = envSchema.parse(process.env);
@@ -30,6 +33,9 @@ export const config = {
 	ACCESS_TOKEN_EXPIRE: env.ACCESS_TOKEN_EXPIRE,
 	REFRESH_TOKEN_SECRET: env.REFRESH_TOKEN_SECRET,
 	REFRESH_TOKEN_EXPIRE: env.REFRESH_TOKEN_EXPIRE,
+	CLOUDINARY_CLOUD_NAME: env.CLOUDINARY_CLOUD_NAME,
+	CLOUDINARY_API_KEY: env.CLOUDINARY_API_KEY,
+	CLOUDINARY_API_SECRET: env.CLOUDINARY_API_SECRET,
 };
 
 export default config;
