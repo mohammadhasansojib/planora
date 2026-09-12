@@ -481,3 +481,55 @@
         }
     }
     ```
+
+### Payment
+
+- **`POST /api/v1/payments/create-payment`**
+    - auth: true
+
+    request body:
+    ```json
+    {
+        
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Payment Created Successfully",
+        "statusCode": 200,
+        "data": {
+            "paymentID": "TR0011MTOcN3f1789208179219",
+            "bkashURL": "https://sandbox.payment.bkash.com/?paymentId=TR0011MTOcN3f1789208179219&hash=AQ(mqat97pArZ3!foZC-cItLK!Zn(f8dvKJ_i7j9VfqHP7cwMpbuJGaaMT9A5FL_m_cosqODU0DGieRYo3(1r_kRnjJpDgxAoh1l1789208179219&mode=0011&apiVersion=v1.2.0-beta/",
+            "callbackURL": "http://localhost:5000/api/v1/payments/callback?userId=acc950d1-32d4-4764-adaf-5a311f022acd",
+            "successCallbackURL": "http://localhost:5000/api/v1/payments/callback?userId=acc950d1-32d4-4764-adaf-5a311f022acd&paymentID=TR0011MTOcN3f1789208179219&status=success&signature=pz5SW0cE4e",
+            "failureCallbackURL": "http://localhost:5000/api/v1/payments/callback?userId=acc950d1-32d4-4764-adaf-5a311f022acd&paymentID=TR0011MTOcN3f1789208179219&status=failure&signature=pz5SW0cE4e",
+            "cancelledCallbackURL": "http://localhost:5000/api/v1/payments/callback?userId=acc950d1-32d4-4764-adaf-5a311f022acd&paymentID=TR0011MTOcN3f1789208179219&status=cancel&signature=pz5SW0cE4e",
+            "amount": "600",
+            "intent": "sale",
+            "currency": "BDT",
+            "paymentCreateTime": "2026-09-12T16:16:19:219 GMT+0600",
+            "transactionStatus": "Initiated",
+            "merchantInvoiceNumber": "Inv04324",
+            "statusCode": "0000",
+            "statusMessage": "Successful",
+            "userId": "acc950d1-32d4-4764-adaf-5a311f022acd"
+        }
+    }
+    ```
+
+- **`POST /api/v1/payments/callback`**
+    - auth: (for now false, but with frontend it will be auth route)
+
+    request body:
+    ```json
+
+    ```
+
+    response: Redicet to payment success page(frontend)
+    ```json
+
+    ```
+
