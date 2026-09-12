@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsx watch src/app/server.ts",
+    "build": "prisma generate && tsc",
+    "start": "node dist/app/server.js",
     "check": "npx @biomejs/biome check --write ./src/app",
     "format": "npx @biomejs/biome format --write ./src/app",
     "lint": "npx @biomejs/biome lint --write ./src/app"
