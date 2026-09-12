@@ -15,3 +15,14 @@ enum ProjectRole {
   MANAGER
   MEMBER
 }
+
+enum PaymentStatus {
+  COMPLETED
+  PENDING
+  FAILED
+}
+
+enum PaymentGatewayEnvironment {
+  SANDBOX
+  PRODUCTION
+}
