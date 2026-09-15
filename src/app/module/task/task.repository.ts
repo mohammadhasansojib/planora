@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
-import type { ICreateSubtask, ICreateTask } from "./task.interface.js";
+import type { ICreateSubtask, ICreateTask, IGetAllTasksOptions } from "./task.interface.js";
 
 class TaskRepository {
     async getProjectById(projectId: string) {
@@ -77,6 +77,34 @@ class TaskRepository {
         return subtask;
     }
 
+    async getAllTasks(options: IGetAllTasksOptions) {
+        let skip: number | undefined;
+        if (options.page) skip = options.page - 1;
+        
+        let take: number | undefined;
+        if (options.limit) take = options.limit;
+
+        let orderBy: {} | {createdAt: "asc" | "desc"} = {};
+        if (options.sortBy) {
+            orderBy = {
+                createdAt: options.order || "asc",
+            }
+        }
+
+        const tasks = await prisma.task.findMany({
+            skip,
+            take,
+            orderBy,
+            where: {
+                OR: [
+                    {title: {contains: options.term, mode: "insensitive"}},
+                    {description: {contains: options.term, mode: "insensitive"}},
+                ]
+            }
+        });
+
+        return tasks;
+    }
 }
 
 const taskRepo = new TaskRepository();

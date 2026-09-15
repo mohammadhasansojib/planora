@@ -13,3 +13,11 @@ export interface ICreateSubtask {
     description?: string
     taskId: string
 }
+
+export interface IGetAllTasksOptions {
+    page?: number
+    limit?: number
+    sortBy?: "createdAt"
+    order?: "asc" | "desc"
+    term?: string
+}

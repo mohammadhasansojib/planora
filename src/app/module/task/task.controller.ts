@@ -3,7 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { BadRequestError } from "../../utils/errorFormats.js";
 import { sendResponse } from "../../utils/sendResponse.js";
-import { AssignTaskToSprintSchema, CreateSubtaskSchema } from "./task.schema.js";
+import { AssignTaskToSprintSchema, CreateSubtaskSchema, GetAllTasksOptionsSchema } from "./task.schema.js";
 import taskService from "./task.service.js";
 
 
@@ -105,10 +105,31 @@ const addAttachment = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+const getAllTasks = catchAsync(async (req: Request, res: Response) => {
+	
+	const options = GetAllTasksOptionsSchema.safeParse(req.query);
+	if (!options.success) {
+		const errMessage = options.error.issues.map(issue => issue.message).join(" | ");
+		throw new BadRequestError(errMessage);
+	}
+
+	const tasks = await taskService.getAllTasks(options.data);
+
+	sendResponse(res, {
+		success: true,
+		message: "Retrived all tasks successfully",
+		statusCode: status.CREATED,
+		data: {
+			tasks,
+		},
+	});
+});
+
 const taskController = {
     createTask,
     assignTaskToSprint,
     createSubtask,
     addAttachment,
+    getAllTasks,
 };
 export default taskController;

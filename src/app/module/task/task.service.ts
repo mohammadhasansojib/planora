@@ -1,6 +1,6 @@
 import { uploadToCloudinary } from "../../lib/cloudinary.js";
 import { AppError, BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
-import type { ICreateSubtask, ICreateTask } from "./task.interface.js";
+import type { ICreateSubtask, ICreateTask, IGetAllTasksOptions } from "./task.interface.js";
 import taskRepo from "./task.repository.js";
 
 const createTask = async (taskData: ICreateTask) => {
@@ -88,10 +88,17 @@ const addAttachment = async (file: Express.Multer.File, taskId: string, userId: 
     return attachment;
 }
 
+const getAllTasks = async (options: IGetAllTasksOptions) => {
+    const tasks = await taskRepo.getAllTasks(options);
+
+    return tasks;
+}
+
 const taskService = {
     createTask,
     assignTaskToSprint,
     createSubtask,
     addAttachment,
+    getAllTasks,
 };
 export default taskService;

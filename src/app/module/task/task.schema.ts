@@ -28,3 +28,12 @@ export const CreateSubtaskSchema = z.object({
         error: "Invalid taskId"
     }),
 });
+
+
+export const GetAllTasksOptionsSchema = z.object({
+    page: z.coerce.number().min(1, "number of page must be more that 0").optional(),
+    limit: z.coerce.number().min(1, "number of project limit must be more that 0").optional(),
+    sortBy: z.enum(["createdAt"]).optional(),
+    order: z.enum(["asc", "desc"]).optional(),
+    term: z.string().optional(),
+});
