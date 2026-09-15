@@ -1,5 +1,6 @@
 import type { TeamRole } from "../../../generated/prisma/enums.js";
 import { BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
+import { IGetAllTeamOptions } from "./team.interface.js";
 import teamRepo from "./team.repository.js";
 
 const createTeam = async (name: string, organizationId: string) => {
@@ -50,8 +51,15 @@ const addMemberToTeam = async (
 	return newMember;
 };
 
+const getAllTeams = async (options: IGetAllTeamOptions) => {
+	const teams = await teamRepo.getAllTeams(options);
+
+	return teams;
+}
+
 const teamService = {
 	createTeam,
 	addMemberToTeam,
+	getAllTeams,
 };
 export default teamService;

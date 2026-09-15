@@ -3,7 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { BadRequestError } from "../../utils/errorFormats.js";
 import { sendResponse } from "../../utils/sendResponse.js";
-import { AddTeamMemberSchema } from "./team.schema.js";
+import { AddTeamMemberSchema, GetAllTeamsOptionsSchema } from "./team.schema.js";
 import teamService from "./team.service.js";
 
 const createTeam = catchAsync(async (req: Request, res: Response) => {
@@ -50,8 +50,29 @@ const addMemberToTeam = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getAllTeams = catchAsync(async (req: Request, res: Response) => {
+	
+	const options = GetAllTeamsOptionsSchema.safeParse(req.query);
+	if (!options.success) {
+		const errMessage = options.error.issues.map(issue => issue.message).join(" | ");
+		throw new BadRequestError(errMessage);
+	}
+
+	const teams = await teamService.getAllTeams(options.data);
+
+	sendResponse(res, {
+		success: true,
+		message: "Retrived all teams successfully",
+		statusCode: status.CREATED,
+		data: {
+			teams,
+		},
+	});
+});
+
 const teamController = {
 	createTeam,
 	addMemberToTeam,
+	getAllTeams,
 };
 export default teamController;

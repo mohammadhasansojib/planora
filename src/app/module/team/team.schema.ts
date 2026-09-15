@@ -19,3 +19,8 @@ export const AddTeamMemberSchema = z.object({
 		error: "Role must be either 'MEMBER' or 'MANAGER'",
 	}),
 });
+
+export const GetAllTeamsOptionsSchema = z.object({
+	page: z.coerce.number().min(1, "number of page must be more that 0").optional(),
+	limit: z.coerce.number().min(1, "number of teams limit must be more that 0").optional(),
+});

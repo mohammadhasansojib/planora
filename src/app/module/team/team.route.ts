@@ -14,5 +14,7 @@ router.post(
 );
 router.post("/:teamId/members", auth(), teamController.addMemberToTeam);
 
+router.get("/", auth(), teamController.getAllTeams);
+
 const teamRouter = router;
 export default teamRouter;

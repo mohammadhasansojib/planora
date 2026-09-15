@@ -1,5 +1,6 @@
 import type { TeamRole } from "../../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
+import { IGetAllTeamOptions } from "./team.interface.js";
 
 class TeamRepository {
 	async getOrganizationById(organizationId: string) {
@@ -74,6 +75,21 @@ class TeamRepository {
 			},
 		});
 		return member;
+	}
+
+	async getAllTeams(options: IGetAllTeamOptions) {
+		let skip: number | undefined;
+		if (options.page) skip = options.page - 1;
+		
+		let take: number | undefined;
+		if (options.limit) take = options.limit;
+
+		const teams = await prisma.team.findMany({
+			skip,
+			take,
+		});
+
+		return teams;
 	}
 }
 
