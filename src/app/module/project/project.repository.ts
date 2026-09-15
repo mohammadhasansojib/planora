@@ -1,5 +1,6 @@
 import type { ProjectRole } from "../../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
+import type { IGetAllProjectsOptions } from "./project.interface.js";
 
 class ProjectRepository {
 	async getTeamById(teamId: string) {
@@ -79,6 +80,21 @@ class ProjectRepository {
 		});
 
 		return member;
+	}
+
+	async getAllProjects(options: IGetAllProjectsOptions) {
+		let skip: number | undefined;
+		if (options.page) skip = options.page - 1;
+		
+		let take: number | undefined;
+		if (options.limit) take = options.limit;
+
+		const projects = await prisma.project.findMany({
+			skip,
+			take,
+		});
+
+		return projects;
 	}
 }
 

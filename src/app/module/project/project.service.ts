@@ -1,5 +1,6 @@
 import type { ProjectRole } from "../../../generated/prisma/enums.js";
 import { BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
+import type { IGetAllProjectsOptions } from "./project.interface.js";
 import projectRepo from "./project.repository.js";
 
 const createProject = async (name: string, teamId: string) => {
@@ -62,9 +63,16 @@ const addMemberToProject = async (
 	return newMember;
 };
 
+const getAllProjects = async (options: IGetAllProjectsOptions) => {
+	const projects = await projectRepo.getAllProjects(options);
+
+	return projects;
+}
+
 const projectService = {
 	createProject,
 	addMemberToProject,
+	getAllProjects,
 };
 
 export default projectService;

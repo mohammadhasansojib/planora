@@ -15,5 +15,7 @@ router.post(
 
 router.post("/:projectId/members", auth(), projectController.addMemberToProject);
 
+router.get("/", auth(), projectController.getAllProjects);
+
 const projectRouter = router;
 export default projectRouter;

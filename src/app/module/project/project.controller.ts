@@ -3,7 +3,7 @@ import status from "http-status";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { BadRequestError } from "../../utils/errorFormats.js";
 import { sendResponse } from "../../utils/sendResponse.js";
-import { AddProjectMemberSchema } from "./project.schema.js";
+import { AddProjectMemberSchema, GetAllProjectsOptionsSchema } from "./project.schema.js";
 import projectService from "./project.service.js";
 
 const createProject = catchAsync(async (req: Request, res: Response) => {
@@ -55,9 +55,30 @@ const addMemberToProject = catchAsync(
 	},
 );
 
+const getAllProjects = catchAsync(async (req: Request, res: Response) => {
+	
+	const options = GetAllProjectsOptionsSchema.safeParse(req.query);
+	if (!options.success) {
+		const errMessage = options.error.issues.map(issue => issue.message).join(" | ");
+		throw new BadRequestError(errMessage);
+	}
+
+	const projects = await projectService.getAllProjects(options.data);
+
+	sendResponse(res, {
+		success: true,
+		message: "Retrived all projects successfully",
+		statusCode: status.CREATED,
+		data: {
+			projects,
+		},
+	});
+});
+
 const projectController = {
 	createProject,
 	addMemberToProject,
+	getAllProjects,
 };
 
 export default projectController;
