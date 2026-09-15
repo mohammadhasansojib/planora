@@ -225,6 +225,37 @@
     }
     ```
 
+- **`GET /api/v1/teams`**
+    - auth: true
+    
+    queries:
+
+    | query | meaning |
+    |----------|----------|
+    | page    | page number |
+    | limit    | teams limit in one page |
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Retrived all teams successfully",
+        "statusCode": 201,
+        "data": {
+            "teams": [
+                {
+                    "id": "e21ab1b8-e440-4b0d-8b36-38da9ec4621f",
+                    "name": "My Second Team",
+                    "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                    "createdAt": "2026-09-05T09:32:02.137Z",
+                    "updatedAt": "2026-09-05T09:32:02.137Z"
+                }
+            ]
+        }
+    }
+    ```
+
+
 
 ### Project
 
@@ -284,6 +315,43 @@
                 "createdAt": "2026-09-05T10:31:52.840Z",
                 "updatedAt": "2026-09-05T10:31:52.840Z"
             }
+        }
+    }
+    ```
+
+- **`GET /api/v1/projects`**
+    - auth: true
+    
+    queries:
+
+    | query | meaning |
+    |----------|----------|
+    | page    | page number |
+    | limit    | teams limit in one page |
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Retrived all projects successfully",
+        "statusCode": 201,
+        "data": {
+            "projects": [
+                {
+                    "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                    "name": "My Second Project",
+                    "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                    "createdAt": "2026-09-05T10:27:04.447Z",
+                    "updatedAt": "2026-09-05T10:27:04.447Z"
+                },
+                {
+                    "id": "8c6af6af-8dba-472e-853f-81365c014f67",
+                    "name": "My First Project",
+                    "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                    "createdAt": "2026-09-05T10:26:35.330Z",
+                    "updatedAt": "2026-09-05T10:26:35.330Z"
+                }
+            ]
         }
     }
     ```
@@ -388,6 +456,62 @@
         }
     }
     ```
+
+
+- **`GET /api/v1/tasks`**
+    - auth: true
+    
+    queries:
+
+    | query | meaning |
+    |----------|----------|
+    | page    | page number |
+    | limit    | teams limit in one page |
+    | sortBy    | sort by which field |
+    | order    | in which order, "asc" or "desc" |
+    | term    | search term for title and description |
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Retrived all tasks successfully",
+        "statusCode": 201,
+        "data": {
+            "tasks": [
+                {
+                    "id": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                    "projectId": "8c6af6af-8dba-472e-853f-81365c014f67",
+                    "sprintId": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                    "title": "My First Task",
+                    "description": "This is very important",
+                    "createdAt": "2026-09-05T13:56:13.569Z",
+                    "updatedAt": "2026-09-05T14:05:17.739Z"
+                },
+                {
+                    "id": "277e84c4-9f7c-4af9-a7e5-61599ac1741a",
+                    "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                    "sprintId": null,
+                    "title": "My Second Task",
+                    "description": "This is very important",
+                    "createdAt": "2026-09-15T13:27:47.712Z",
+                    "updatedAt": "2026-09-15T13:27:47.712Z"
+                },
+                {
+                    "id": "b574afa4-a781-47fb-ac9f-f0e4d83bcd63",
+                    "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                    "sprintId": null,
+                    "title": "My Third Task",
+                    "description": "This is very important",
+                    "createdAt": "2026-09-15T13:27:53.529Z",
+                    "updatedAt": "2026-09-15T13:27:53.529Z"
+                }
+            ]
+        }
+    }
+    ```
+
+
 
 - **`POST /api/v1/tasks/:taskId/subtasks`**
     - auth: true
