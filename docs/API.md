@@ -76,6 +76,29 @@
     }
     ```
 
+- **`POST /api/v1/auth/google`**
+
+    request body:
+    ```json
+    {
+        "idToken": "id_token_from_google_here"
+    }
+    ```
+
+    response:
+    ```json
+    {
+        "statusCode": 200,
+        "success": true,
+        "message": "New tokens generated successfully",
+        "data": {
+            "accessToken": "access_token_here",
+            "refreshToken": "refresh_token_here"
+        }
+    }
+    ```
+
+
 ### Organization
 
 - **`POST /api/v1/organizations`**
