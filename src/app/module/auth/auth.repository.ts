@@ -15,6 +15,17 @@ class AuthRepo {
 		return createdUser;
 	}
 
+	async createUserUsingGoogle(payload: Omit<UserRegistrationPayload, "password">) {
+		const createdUser = await prisma.user.create({
+			data: {
+				...payload,
+				provider: "GOOGLE",
+			}
+		});
+
+		return createdUser;
+	}
+
 	async getUserByEmail(email: string) {
 		const user = await prisma.user.findUnique({
 			where: {

@@ -26,3 +26,8 @@ enum PaymentGatewayEnvironment {
   SANDBOX
   PRODUCTION
 }
+
+enum AuthProvider {
+  CREDENTIAL
+  GOOGLE
+}

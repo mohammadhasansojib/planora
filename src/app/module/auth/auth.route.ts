@@ -24,5 +24,7 @@ router.post(
 	authController.refresh,
 );
 
+router.post("/google", authController.googleLogin);
+
 const authRouter = router;
 export default authRouter;

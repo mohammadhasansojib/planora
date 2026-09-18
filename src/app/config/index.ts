@@ -28,6 +28,9 @@ const envSchema = z.object({
 	BKASH_APP_SECRET: z.string().min(1, "BKASH_APP_SECRET is required"),
 	BKASH_CALLBACK_URL: z.string().min(1, "BKASH_CALLBACK_URL is required"),
 	BKASH_FRONTEND_REDIRECT_URL: z.string().min(1, "BKASH_FRONTEND_REDIRECT_URL is required"),
+	GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
+	GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
+	GOOGLE_CALLBACK_URL: z.string().min(1, "GOOGLE_CALLBACK_URL is required"),
 });
 
 const env = envSchema.parse(process.env);
@@ -50,6 +53,9 @@ export const config = {
 	BKASH_APP_SECRET: env.BKASH_APP_SECRET,
 	BKASH_CALLBACK_URL: env.BKASH_CALLBACK_URL,
 	BKASH_FRONTEND_REDIRECT_URL: env.BKASH_FRONTEND_REDIRECT_URL,
+	GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
+	GOOGLE_CALLBACK_URL: env.GOOGLE_CALLBACK_URL,
 };
 
 export default config;
