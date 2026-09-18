@@ -110,9 +110,9 @@ User
 ### Installation
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/mohammadhasansojib/planora.git
 
-cd planora-backend
+cd planora
 
 npm install
 ```
@@ -141,6 +141,10 @@ BKASH_CALLBACK_URL=
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=
 ```
 
 ### Database Setup
@@ -153,7 +157,7 @@ npx prisma generate
 ### Run Development Server
 
 ```bash
-npm run dev
+npx tsx watch index.ts
 ```
 
 ## API Documentation
@@ -176,7 +180,7 @@ The demo account is a regular user who owns a demo organization and can access t
 
 ### Backend
 
-Live API URL: 
+Live API URL: https://planora-black-two.vercel.app
 
 ### Repository
 
