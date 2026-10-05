@@ -19,6 +19,7 @@
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "2.5.11",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.2.0",
@@ -33,6 +34,7 @@
     "@types/node": "^26.5.1",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "google-auth-library": "^11.1.0",

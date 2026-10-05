@@ -1,8 +1,10 @@
+import cors from "cors";
 import express, {
 	type NextFunction,
 	type Request,
 	type Response,
 } from "express";
+import config from "./config/index.js";
 import { prisma } from "./lib/prisma.js";
 import authRouter from "./module/auth/auth.route.js";
 import commentRouter from "./module/comment/comment.route.js";
@@ -16,6 +18,11 @@ import { AppError } from "./utils/errorFormats.js";
 import { sendResponse } from "./utils/sendResponse.js";
 
 const app = express();
+
+app.use(cors({
+	origin: `${config.FRONTEND_URL}`,
+	credentials: true,
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

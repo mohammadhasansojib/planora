@@ -31,6 +31,7 @@ const envSchema = z.object({
 	GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
 	GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET is required"),
 	GOOGLE_CALLBACK_URL: z.string().min(1, "GOOGLE_CALLBACK_URL is required"),
+	FRONTEND_URL: z.string().min(1, "FRONTEND_URL is required"),
 });
 
 const env = envSchema.parse(process.env);
@@ -56,6 +57,7 @@ export const config = {
 	GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
 	GOOGLE_CALLBACK_URL: env.GOOGLE_CALLBACK_URL,
+	FRONTEND_URL: env.FRONTEND_URL,
 };
 
 export default config;
