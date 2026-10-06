@@ -1,7 +1,7 @@
-import type { Request, Response, NextFunction } from "express";
-import { AuthorizationError } from "../utils/errorFormats.js";
+import type { NextFunction, Request, Response } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { config } from "../config/index.js";
+import { AuthorizationError } from "../utils/errorFormats.js";
 
 declare global {
 	namespace Express {
@@ -17,11 +17,20 @@ declare global {
 export const auth = () => {
 	return async (req: Request, _res: Response, next: NextFunction) => {
 		try {
-			const token = req.headers.authorization
-				? req.headers.authorization.startsWith("Bearer")
-					? req.headers.authorization.split(" ")[1]
-					: req.headers.authorization
-				: null;
+			let token: string | null;
+
+			if (req.headers.authorization) {
+				if (req.headers.authorization.startsWith("Bearer")) {
+					token = req.headers.authorization.split(" ")[1];
+				} else {
+					token = req.headers.authorization;
+				}
+			} else if (req.cookies.accessToken) {
+				token = req.cookies.accessToken;
+			} else {
+				token = null;
+			}
+
 			if (!token) {
 				throw new AuthorizationError("token not found");
 			}
