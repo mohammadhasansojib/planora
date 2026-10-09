@@ -10,5 +10,8 @@ export const AddMemberSchema = z.object({
 	}),
 	userId: z.uuid({
 		error: "Invalid user Id",
-	}),
+	}).optional(),
+	email: z.string().trim().pipe(z.email()).optional(),
+}).refine(({ userId, email }) => Boolean(userId) !== Boolean(email), {
+	message: "Provide either a userId or an email, but not both",
 });

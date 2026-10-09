@@ -19,14 +19,17 @@ const getUsersAllOrg = async (userId: string) => {
 
 const addMemberToOrganization = async (
 	organizationId: string,
-	userId: string,
+	identity: { userId: string } | { email: string },
 ) => {
 	const organization = await orgRepo.getOrganizationById(organizationId);
 	if (!organization) {
 		throw new NotFoundError("organization not found");
 	}
 
-	const user = await orgRepo.getUserById(userId);
+	const user =
+		"email" in identity
+			? await orgRepo.getUserByEmail(identity.email)
+			: await orgRepo.getUserById(identity.userId);
 	if (!user) {
 		throw new NotFoundError("user not found");
 	}

@@ -62,6 +62,16 @@ class OrganizationRepo {
 		return user;
 	}
 
+	async getUserByEmail(email: string) {
+		const user = await prisma.user.findUnique({
+			where: {
+				email,
+			},
+		});
+
+		return user;
+	}
+
 	async getOrgMemberByUserandOrgId(organizationId: string, userId: string) {
 		const member = await prisma.organizationMember.findUnique({
 			where: {

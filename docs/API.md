@@ -163,9 +163,11 @@
     request body:
     ```json
     {
-        "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3"
+        "email": "member@example.com"
     }
     ```
+    Provide exactly one of `email` or `userId`. Email must belong to an
+    existing user. `userId` remains supported for existing clients.
 
     response:
     ```json
@@ -679,4 +681,3 @@
     ```json
 
     ```
-

@@ -2,11 +2,10 @@ import type { Request, Response } from "express";
 import status from "http-status";
 import type { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync.js";
-import { sendResponse } from "../../utils/sendResponse.js";
-import { organizationService } from "./organization.service.js";
 import { BadRequestError } from "../../utils/errorFormats.js";
-import { validateRequest } from "../../middleware/zodValidation.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 import { AddMemberSchema } from "./organization.schema.js";
+import { organizationService } from "./organization.service.js";
 
 const createOrganization = catchAsync(async (req: Request, res: Response) => {
 	const payload = req.body;
@@ -44,7 +43,6 @@ const getUserOrganizations = catchAsync(async (req: Request, res: Response) => {
 
 const addMember = catchAsync(async (req: Request, res: Response) => {
 	const organizationId = req.params.organizationId;
-	const { userId } = req.body;
 
 	const validIds = AddMemberSchema.safeParse({
 		organizationId,
@@ -61,9 +59,19 @@ const addMember = catchAsync(async (req: Request, res: Response) => {
 		throw new BadRequestError("invalid organizationId in url");
 	}
 
+	const { email, userId } = validIds.data;
+	const identity = email
+		? { email }
+		: userId
+			? { userId }
+			: null;
+	if (!identity) {
+		throw new BadRequestError("provide either a userId or an email");
+	}
+
 	const member = await organizationService.addMemberToOrganization(
 		organizationId,
-		userId,
+		identity,
 	);
 
 	sendResponse(res, {
