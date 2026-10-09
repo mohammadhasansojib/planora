@@ -157,6 +157,35 @@
     }
     ```
 
+- **`GET /api/v1/organizations/:organizationId/members`**
+    - auth: true
+    - Only a member of the requested organization may view its members.
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Organization members retrieved successfully",
+        "statusCode": 200,
+        "data": {
+            "members": [
+                {
+                    "id": "a04da2dd-ea35-4bac-930c-1ac76072a55f",
+                    "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0",
+                    "userId": "749f5298-4e7d-4529-92e7-e6e7ded335d3",
+                    "role": "MEMBER",
+                    "createdAt": "2026-09-05T05:06:33.345Z",
+                    "updatedAt": "2026-09-05T05:06:33.345Z",
+                    "user": {
+                        "username": "Hasan",
+                        "email": "member@example.com"
+                    }
+                }
+            ]
+        }
+    }
+    ```
+
 - **`POST /api/v1/organizations/:organizationId/members`**
     - auth: true
 

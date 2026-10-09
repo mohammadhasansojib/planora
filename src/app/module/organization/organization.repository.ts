@@ -85,6 +85,31 @@ class OrganizationRepo {
 		return member;
 	}
 
+	async getOrganizationMembers(organizationId: string) {
+		return prisma.organizationMember.findMany({
+			where: {
+				organizationId,
+			},
+			select: {
+				id: true,
+				organizationId: true,
+				userId: true,
+				role: true,
+				createdAt: true,
+				updatedAt: true,
+				user: {
+					select: {
+						username: true,
+						email: true,
+					},
+				},
+			},
+			orderBy: {
+				createdAt: "asc",
+			},
+		});
+	}
+
 	async createOrganizationMember(organizationId: string, userId: string) {
 		const member = await prisma.organizationMember.create({
 			data: {

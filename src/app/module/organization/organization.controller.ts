@@ -41,6 +41,31 @@ const getUserOrganizations = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getOrganizationMembers = catchAsync(
+	async (req: Request, res: Response) => {
+		const organizationId = req.params.organizationId;
+		const { id: userId } = req.user as JwtPayload;
+
+		if (typeof organizationId !== "string") {
+			throw new BadRequestError("invalid organizationId in url");
+		}
+
+		const members = await organizationService.getOrganizationMembers(
+			organizationId,
+			userId,
+		);
+
+		sendResponse(res, {
+			success: true,
+			message: "Organization members retrieved successfully",
+			statusCode: status.OK,
+			data: {
+				members,
+			},
+		});
+	},
+);
+
 const addMember = catchAsync(async (req: Request, res: Response) => {
 	const organizationId = req.params.organizationId;
 
@@ -87,5 +112,6 @@ const addMember = catchAsync(async (req: Request, res: Response) => {
 export const organizationController = {
 	createOrganization,
 	getUserOrganizations,
+	getOrganizationMembers,
 	addMember,
 };

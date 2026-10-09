@@ -1,4 +1,8 @@
-import { BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
+import {
+	BadRequestError,
+	ForbiddenError,
+	NotFoundError,
+} from "../../utils/errorFormats.js";
 import type { ICreateOrganization } from "./organization.interface.js";
 import { orgRepo } from "./organization.repository.js";
 
@@ -15,6 +19,26 @@ const getUsersAllOrg = async (userId: string) => {
 	const organizations = await orgRepo.getUsersAllOrg(userId);
 
 	return organizations;
+};
+
+const getOrganizationMembers = async (
+	organizationId: string,
+	requestingUserId: string,
+) => {
+	const organization = await orgRepo.getOrganizationById(organizationId);
+	if (!organization) {
+		throw new NotFoundError("organization not found");
+	}
+
+	const requestingMember = await orgRepo.getOrgMemberByUserandOrgId(
+		organizationId,
+		requestingUserId,
+	);
+	if (!requestingMember) {
+		throw new ForbiddenError("you are not a member of this organization");
+	}
+
+	return orgRepo.getOrganizationMembers(organizationId);
 };
 
 const addMemberToOrganization = async (
@@ -53,5 +77,6 @@ const addMemberToOrganization = async (
 export const organizationService = {
 	createOrganization,
 	getUsersAllOrg,
+	getOrganizationMembers,
 	addMemberToOrganization,
 };

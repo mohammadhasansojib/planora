@@ -14,6 +14,12 @@ router.post(
 );
 router.get("/", auth(), organizationController.getUserOrganizations);
 
+router.get(
+	"/:organizationId/members",
+	auth(),
+	organizationController.getOrganizationMembers,
+);
+
 router.post(
 	"/:organizationId/members",
 	auth(),
