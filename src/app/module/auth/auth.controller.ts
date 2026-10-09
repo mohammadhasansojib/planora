@@ -68,6 +68,22 @@ const logout = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getMe = catchAsync(async (req: Request, res: Response) => {
+	const user = req.user;
+	if (!user) {
+		throw new AuthorizationError("user not found");
+	}
+
+	sendResponse(res, {
+		success: true,
+		message: "user get successfully",
+		statusCode: 200,
+		data: {
+			user,
+		}
+	})
+})
+
 const refresh = catchAsync(async (req: Request, res: Response) => {
 	const refreshToken = req.cookies?.refreshToken;
 	if (!refreshToken) {
@@ -117,6 +133,7 @@ export const authController = {
 	register,
 	login,
 	logout,
+	getMe,
 	refresh,
 	googleLogin,
 };

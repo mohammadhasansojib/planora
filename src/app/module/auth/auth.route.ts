@@ -14,6 +14,8 @@ router.post(
 router.post("/login", validateRequest(LoginSchema), authController.login);
 router.post("/logout", auth(), authController.logout);
 
+router.get("/me", auth(), authController.getMe);
+
 router.post("/refresh-token", authController.refresh);
 
 router.post("/google", authController.googleLogin);
