@@ -221,6 +221,7 @@
 
 - **`POST /api/v1/teams`**
     - auth: true
+    - The signed-in user must belong to the organization.
 
     request body:
     ```json
@@ -251,6 +252,7 @@
 
 - **`POST /api/v1/teams/:teamId/members`**
     - auth: true
+    - The signed-in user and the new team member must belong to the team's organization.
 
     request body:
     ```json
@@ -286,15 +288,16 @@
 
     | query | meaning |
     |----------|----------|
-    | page    | page number |
-    | limit    | teams limit in one page |
+    | page    | page number (default: 1) |
+    | limit    | teams per page (default: 10, maximum: 100) |
+    | organizationId | optional organization filter; the signed-in user must belong to it |
 
     response:
     ```json
     {
         "success": true,
-        "message": "Retrived all teams successfully",
-        "statusCode": 201,
+        "message": "Retrieved all teams successfully",
+        "statusCode": 200,
         "data": {
             "teams": [
                 {
@@ -304,12 +307,52 @@
                     "createdAt": "2026-09-05T09:32:02.137Z",
                     "updatedAt": "2026-09-05T09:32:02.137Z"
                 }
-            ]
+            ],
+            "pagination": {
+                "page": 1,
+                "limit": 10,
+                "total": 1,
+                "totalPages": 1
+            }
         }
     }
     ```
+## Get Team Members
 
+**GET**
 
+```text
+/api/v1/teams/:teamId/members
+```
+
+- auth: true
+- The signed-in user must belong to the team's organization.
+
+response:
+
+```json
+{
+    "success": true,
+    "message": "Team members retrieved successfully",
+    "statusCode": 200,
+    "data": {
+        "members": [
+            {
+                "id": "team-member-id",
+                "teamId": "team-id",
+                "userId": "user-id",
+                "role": "MEMBER",
+                "createdAt": "2026-09-05T09:59:40.064Z",
+                "updatedAt": "2026-09-05T09:59:40.064Z",
+                "user": {
+                    "username": "member-name",
+                    "email": "member@example.com"
+                }
+            }
+        ]
+    }
+}
+```
 
 ### Project
 

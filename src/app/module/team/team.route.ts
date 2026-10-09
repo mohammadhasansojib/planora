@@ -14,6 +14,8 @@ router.post(
 );
 router.post("/:teamId/members", auth(), teamController.addMemberToTeam);
 
+router.get("/:teamId/members", auth(), teamController.getTeamMembers);
+
 router.get("/", auth(), teamController.getAllTeams);
 
 const teamRouter = router;

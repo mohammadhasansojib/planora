@@ -1,6 +1,6 @@
 import type { TeamRole } from "../../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
-import { IGetAllTeamOptions } from "./team.interface.js";
+import type { IGetAllTeamOptions } from "./team.interface.js";
 
 class TeamRepository {
 	async getOrganizationById(organizationId: string) {
@@ -55,6 +55,17 @@ class TeamRepository {
 		return team;
 	}
 
+	async getOrganizationMember(organizationId: string, userId: string) {
+		return prisma.organizationMember.findUnique({
+			where: {
+				userId_organizationId: {
+					organizationId,
+					userId,
+				},
+			},
+		});
+	}
+
 	async checkMemberInTeam(teamId: string, userId: string) {
 		const member = await prisma.teamMember.findFirst({
 			where: {
@@ -77,19 +88,56 @@ class TeamRepository {
 		return member;
 	}
 
-	async getAllTeams(options: IGetAllTeamOptions) {
-		let skip: number | undefined;
-		if (options.page) skip = options.page - 1;
-		
-		let take: number | undefined;
-		if (options.limit) take = options.limit;
-
-		const teams = await prisma.team.findMany({
-			skip,
-			take,
+	async getTeamMembers(teamId: string) {
+		return prisma.teamMember.findMany({
+			where: {
+				teamId,
+			},
+			select: {
+				id: true,
+				teamId: true,
+				userId: true,
+				role: true,
+				createdAt: true,
+				updatedAt: true,
+				user: {
+					select: {
+						username: true,
+						email: true,
+					},
+				},
+			},
+			orderBy: {
+				createdAt: "asc",
+			},
 		});
+	}
 
-		return teams;
+	async getAllTeams(options: IGetAllTeamOptions) {
+		const where = options.organizationId
+			? { organizationId: options.organizationId }
+			: {};
+		const [teams, total] = await Promise.all([
+			prisma.team.findMany({
+				where,
+				skip: (options.page - 1) * options.limit,
+				take: options.limit,
+				orderBy: {
+					createdAt: "desc",
+				},
+			}),
+			prisma.team.count({ where }),
+		]);
+
+		return {
+			teams,
+			pagination: {
+				page: options.page,
+				limit: options.limit,
+				total,
+				totalPages: Math.ceil(total / options.limit),
+			},
+		};
 	}
 }
 

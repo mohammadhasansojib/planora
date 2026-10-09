@@ -20,7 +20,23 @@ export const AddTeamMemberSchema = z.object({
 	}),
 });
 
+export const GetTeamMembersSchema = z.object({
+	teamId: z.uuid({
+		error: "Invalid team Id",
+	}),
+});
+
 export const GetAllTeamsOptionsSchema = z.object({
-	page: z.coerce.number().min(1, "number of page must be more that 0").optional(),
-	limit: z.coerce.number().min(1, "number of teams limit must be more that 0").optional(),
+	page: z.coerce
+		.number()
+		.int()
+		.min(1, "number of page must be more that 0")
+		.default(1),
+	limit: z.coerce
+		.number()
+		.int()
+		.min(1, "number of teams limit must be more that 0")
+		.max(100, "number of teams limit cannot exceed 100")
+		.default(10),
+	organizationId: z.uuid({ error: "Invalid organization Id" }).optional(),
 });
