@@ -1,7 +1,5 @@
-
-
-
 export interface IGetAllProjectsOptions {
-    page?: number
-    limit?: number
+	page: number;
+	limit: number;
+	organizationId?: string;
 }

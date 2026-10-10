@@ -13,7 +13,13 @@ router.post(
 	projectController.createProject,
 );
 
-router.post("/:projectId/members", auth(), projectController.addMemberToProject);
+router.post(
+	"/:projectId/members",
+	auth(),
+	projectController.addMemberToProject,
+);
+
+router.get("/:projectId/members", auth(), projectController.getProjectMembers);
 
 router.get("/", auth(), projectController.getAllProjects);
 

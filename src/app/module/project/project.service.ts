@@ -1,13 +1,29 @@
 import type { ProjectRole } from "../../../generated/prisma/enums.js";
-import { BadRequestError, NotFoundError } from "../../utils/errorFormats.js";
+import {
+	BadRequestError,
+	ForbiddenError,
+	NotFoundError,
+} from "../../utils/errorFormats.js";
 import type { IGetAllProjectsOptions } from "./project.interface.js";
 import projectRepo from "./project.repository.js";
 
-const createProject = async (name: string, teamId: string) => {
+const createProject = async (
+	name: string,
+	teamId: string,
+	requestingUserId: string,
+) => {
 	const team = await projectRepo.getTeamById(teamId);
 
 	if (!team) {
 		throw new NotFoundError("Team not found");
+	}
+
+	const requestingMember = await projectRepo.getOrganizationMember(
+		team.organizationId,
+		requestingUserId,
+	);
+	if (!requestingMember) {
+		throw new ForbiddenError("You are not a member of this organization");
 	}
 
 	const existingProject = await projectRepo.getProjectByNameAndTeamId(
@@ -30,6 +46,7 @@ const addMemberToProject = async (
 	projectId: string,
 	userId: string,
 	role: ProjectRole,
+	requestingUserId: string,
 ) => {
 	const user = await projectRepo.getUserById(userId);
 
@@ -43,15 +60,36 @@ const addMemberToProject = async (
 		throw new NotFoundError("Project not found");
 	}
 
+	const team = await projectRepo.getTeamById(project.teamId);
+	if (!team) {
+		throw new NotFoundError("Project team not found");
+	}
+
+	const requestingMember = await projectRepo.getOrganizationMember(
+		team.organizationId,
+		requestingUserId,
+	);
+	if (!requestingMember) {
+		throw new ForbiddenError("You are not a member of this organization");
+	}
+
+	const targetMember = await projectRepo.getOrganizationMember(
+		team.organizationId,
+		userId,
+	);
+	if (!targetMember) {
+		throw new BadRequestError(
+			"Project members must belong to the project's organization",
+		);
+	}
+
 	const existingMember = await projectRepo.checkMemberInProject(
 		projectId,
 		userId,
 	);
 
 	if (existingMember) {
-		throw new BadRequestError(
-			"User is already a member of the project",
-		);
+		throw new BadRequestError("User is already a member of the project");
 	}
 
 	const newMember = await projectRepo.addMemberToProject(
@@ -63,15 +101,59 @@ const addMemberToProject = async (
 	return newMember;
 };
 
-const getAllProjects = async (options: IGetAllProjectsOptions) => {
-	const projects = await projectRepo.getAllProjects(options);
+const getProjectMembers = async (
+	projectId: string,
+	requestingUserId: string,
+) => {
+	const project = await projectRepo.getProjectById(projectId);
+	if (!project) {
+		throw new NotFoundError("Project not found");
+	}
 
-	return projects;
-}
+	const team = await projectRepo.getTeamById(project.teamId);
+	if (!team) {
+		throw new NotFoundError("Project team not found");
+	}
+
+	const requestingMember = await projectRepo.getOrganizationMember(
+		team.organizationId,
+		requestingUserId,
+	);
+	if (!requestingMember) {
+		throw new ForbiddenError("You are not a member of this organization");
+	}
+
+	return projectRepo.getProjectMembers(projectId);
+};
+
+const getAllProjects = async (
+	options: IGetAllProjectsOptions,
+	requestingUserId: string,
+) => {
+	if (options.organizationId) {
+		const organization = await projectRepo.getOrganizationById(
+			options.organizationId,
+		);
+		if (!organization) {
+			throw new NotFoundError("Organization not found");
+		}
+
+		const requestingMember = await projectRepo.getOrganizationMember(
+			options.organizationId,
+			requestingUserId,
+		);
+		if (!requestingMember) {
+			throw new ForbiddenError("You are not a member of this organization");
+		}
+	}
+
+	return projectRepo.getAllProjects(options);
+};
 
 const projectService = {
 	createProject,
 	addMemberToProject,
+	getProjectMembers,
 	getAllProjects,
 };
 

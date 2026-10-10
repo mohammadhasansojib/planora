@@ -13,6 +13,25 @@ class ProjectRepository {
 		return team;
 	}
 
+	async getOrganizationById(organizationId: string) {
+		return prisma.organization.findUnique({
+			where: {
+				id: organizationId,
+			},
+		});
+	}
+
+	async getOrganizationMember(organizationId: string, userId: string) {
+		return prisma.organizationMember.findUnique({
+			where: {
+				userId_organizationId: {
+					organizationId,
+					userId,
+				},
+			},
+		});
+	}
+
 	async getProjectByNameAndTeamId(name: string, teamId: string) {
 		const project = await prisma.project.findFirst({
 			where: {
@@ -82,19 +101,70 @@ class ProjectRepository {
 		return member;
 	}
 
-	async getAllProjects(options: IGetAllProjectsOptions) {
-		let skip: number | undefined;
-		if (options.page) skip = options.page - 1;
-		
-		let take: number | undefined;
-		if (options.limit) take = options.limit;
-
-		const projects = await prisma.project.findMany({
-			skip,
-			take,
+	async getProjectMembers(projectId: string) {
+		return prisma.projectMember.findMany({
+			where: {
+				projectId,
+			},
+			select: {
+				id: true,
+				projectId: true,
+				userId: true,
+				role: true,
+				createdAt: true,
+				updatedAt: true,
+				user: {
+					select: {
+						username: true,
+						email: true,
+					},
+				},
+			},
+			orderBy: {
+				createdAt: "asc",
+			},
 		});
+	}
 
-		return projects;
+	async getAllProjects(options: IGetAllProjectsOptions) {
+		const where = options.organizationId
+			? { team: { organizationId: options.organizationId } }
+			: {};
+		const [projects, total] = await Promise.all([
+			prisma.project.findMany({
+				where,
+				select: {
+					id: true,
+					name: true,
+					teamId: true,
+					createdAt: true,
+					updatedAt: true,
+					team: {
+						select: {
+							id: true,
+							name: true,
+							organizationId: true,
+						},
+					},
+				},
+				skip: (options.page - 1) * options.limit,
+				take: options.limit,
+				orderBy: {
+					createdAt: "desc",
+				},
+			}),
+			prisma.project.count({ where }),
+		]);
+
+		return {
+			projects,
+			pagination: {
+				page: options.page,
+				limit: options.limit,
+				total,
+				totalPages: Math.ceil(total / options.limit),
+			},
+		};
 	}
 }
 

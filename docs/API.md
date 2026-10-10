@@ -358,6 +358,7 @@ response:
 
 - **`POST /api/v1/projects`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the selected team.
 
     request body:
     ```json
@@ -388,6 +389,7 @@ response:
 
 - **`POST /api/v1/projects/:projectId/members`**
     - auth: true
+    - The signed-in user and target user must belong to the project's organization.
 
     request body:
     ```json
@@ -416,6 +418,35 @@ response:
     }
     ```
 
+- **`GET /api/v1/projects/:projectId/members`**
+    - auth: true
+    - The signed-in user must belong to the project's organization.
+
+    response:
+    ```json
+    {
+        "success": true,
+        "message": "Project members retrieved successfully",
+        "statusCode": 200,
+        "data": {
+            "members": [
+                {
+                    "id": "project-member-id",
+                    "projectId": "project-id",
+                    "userId": "user-id",
+                    "role": "MEMBER",
+                    "createdAt": "2026-09-05T10:31:52.840Z",
+                    "updatedAt": "2026-09-05T10:31:52.840Z",
+                    "user": {
+                        "username": "member-name",
+                        "email": "member@example.com"
+                    }
+                }
+            ]
+        }
+    }
+    ```
+
 - **`GET /api/v1/projects`**
     - auth: true
     
@@ -423,15 +454,16 @@ response:
 
     | query | meaning |
     |----------|----------|
-    | page    | page number |
-    | limit    | teams limit in one page |
+    | page    | page number (default: 1) |
+    | limit    | projects per page (default: 10, maximum: 100) |
+    | organizationId | optional organization filter; the signed-in user must belong to it |
 
     response:
     ```json
     {
         "success": true,
-        "message": "Retrived all projects successfully",
-        "statusCode": 201,
+        "message": "Retrieved all projects successfully",
+        "statusCode": 200,
         "data": {
             "projects": [
                 {
@@ -439,16 +471,32 @@ response:
                     "name": "My Second Project",
                     "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
                     "createdAt": "2026-09-05T10:27:04.447Z",
-                    "updatedAt": "2026-09-05T10:27:04.447Z"
+                    "updatedAt": "2026-09-05T10:27:04.447Z",
+                    "team": {
+                        "id": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                        "name": "Design",
+                        "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0"
+                    }
                 },
                 {
                     "id": "8c6af6af-8dba-472e-853f-81365c014f67",
                     "name": "My First Project",
                     "teamId": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
                     "createdAt": "2026-09-05T10:26:35.330Z",
-                    "updatedAt": "2026-09-05T10:26:35.330Z"
+                    "updatedAt": "2026-09-05T10:26:35.330Z",
+                    "team": {
+                        "id": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
+                        "name": "Design",
+                        "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0"
+                    }
                 }
-            ]
+            ],
+            "pagination": {
+                "page": 1,
+                "limit": 10,
+                "total": 2,
+                "totalPages": 1
+            }
         }
     }
     ```
