@@ -1,31 +1,25 @@
-import type {Request, Response} from "express";
+import type { Request, Response } from "express";
 import status from "http-status";
+import type { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 import sprintService from "./sprint.service.js";
 
-
 const createSprint = catchAsync(async (req: Request, res: Response) => {
-    const { name, projectId, startTime, endTime } = req.body;
+	const { id: requestingUserId } = req.user as JwtPayload;
+	const sprint = await sprintService.createSprint(req.body, requestingUserId);
 
-    const sprint = await sprintService.createSprint({
-        name,
-        projectId,
-        startTime,
-        endTime
-    });
-
-    sendResponse(res, {
-        success: true,
-        message: "Sprint created successfully",
-        statusCode: status.CREATED,
-        data: {
-            sprint,
-        },
-    });
+	sendResponse(res, {
+		success: true,
+		message: "Sprint created successfully",
+		statusCode: status.CREATED,
+		data: {
+			sprint,
+		},
+	});
 });
 
 const sprintController = {
-  createSprint,
+	createSprint,
 };
 export default sprintController;

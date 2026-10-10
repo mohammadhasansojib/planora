@@ -146,6 +146,20 @@ class ProjectRepository {
 							organizationId: true,
 						},
 					},
+					sprints: {
+						select: {
+							id: true,
+							name: true,
+							projectId: true,
+							startTime: true,
+							endTime: true,
+							createdAt: true,
+							updatedAt: true,
+						},
+						orderBy: {
+							startTime: "asc",
+						},
+					},
 				},
 				skip: (options.page - 1) * options.limit,
 				take: options.limit,

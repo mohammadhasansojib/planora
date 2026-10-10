@@ -476,7 +476,18 @@ response:
                         "id": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
                         "name": "Design",
                         "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0"
-                    }
+                    },
+                    "sprints": [
+                        {
+                            "id": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                            "name": "My first sprint",
+                            "projectId": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                            "startTime": "2026-09-05T11:46:07.779Z",
+                            "endTime": "2026-09-08T11:46:07.779Z",
+                            "createdAt": "2026-09-05T12:05:23.873Z",
+                            "updatedAt": "2026-09-05T12:05:23.873Z"
+                        }
+                    ]
                 },
                 {
                     "id": "8c6af6af-8dba-472e-853f-81365c014f67",
@@ -488,7 +499,8 @@ response:
                         "id": "1ae39862-c31f-4356-b010-f1bf76c9e08e",
                         "name": "Design",
                         "organizationId": "d586b89c-3b04-4995-b185-06d5a007f1d0"
-                    }
+                    },
+                    "sprints": []
                 }
             ],
             "pagination": {
@@ -506,6 +518,8 @@ response:
 
 - **`POST /api/v1/sprints`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the project.
+    - Sprint start time must be before its end time.
 
     request body:
     ```json
