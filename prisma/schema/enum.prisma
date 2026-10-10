@@ -20,6 +20,7 @@ enum PaymentStatus {
   COMPLETED
   PENDING
   FAILED
+  CANCELLED
 }
 
 enum PaymentGatewayEnvironment {

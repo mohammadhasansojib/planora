@@ -1,6 +1,6 @@
 import config from "../../config/index.js";
 import getBkashIdToken from "../../lib/bkash.js";
-import { AuthorizationError } from "../../utils/errorFormats.js";
+import { AppError, AuthorizationError } from "../../utils/errorFormats.js";
 import paymentRepo from "./payment.repository.js";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -21,11 +21,9 @@ const createPayment = async (userId: string) => {
 				"X-App-Key": config.BKASH_APP_KEY,
 			},
 			body: JSON.stringify({
-				// agreementID:'TokenizedMerchant01L3IKB6H1565072174986',
 				mode: "0011",
 				payerReference: "01929918378",
 				callbackURL: `${config.BKASH_CALLBACK_URL}/api/v1/payments/callback?userId=${userId}`,
-				// merchantAssociationInfo: "MI05MID54RF09123456One",
 				amount: "600",
 				currency: "BDT",
 				intent: "sale",
@@ -34,12 +32,39 @@ const createPayment = async (userId: string) => {
 		},
 	);
 
-	const bkashCreatePaymentResult = await bkashCreatePayment.json();
+	if (!bkashCreatePayment.ok) {
+		throw new AppError("bKash could not initialize the payment", 502);
+	}
+
+	const bkashCreatePaymentResult: unknown = await bkashCreatePayment.json();
+	if (
+		!isRecord(bkashCreatePaymentResult) ||
+		typeof bkashCreatePaymentResult.paymentID !== "string" ||
+		!bkashCreatePaymentResult.paymentID ||
+		typeof bkashCreatePaymentResult.bkashURL !== "string" ||
+		!bkashCreatePaymentResult.bkashURL
+	) {
+		throw new AppError("bKash returned incomplete payment information", 502);
+	}
+
+	await paymentRepo.createPayment({
+		userId,
+		paymentId: bkashCreatePaymentResult.paymentID,
+		amount: 600,
+	});
 
 	return bkashCreatePaymentResult;
 };
 
 const executePayment = async (paymentID: string, userId: string) => {
+	const existingPayment = await paymentRepo.getPayment(paymentID, userId);
+	if (existingPayment?.status === "COMPLETED") {
+		return true;
+	}
+	if (!existingPayment) {
+		return false;
+	}
+
 	const idToken = await getBkashIdToken();
 	if (!idToken) {
 		throw new AuthorizationError("idToken not found");
@@ -81,18 +106,39 @@ const executePayment = async (paymentID: string, userId: string) => {
 		return false;
 	}
 
-	await paymentRepo.createPayment({
+	return paymentRepo.completePayment({
 		userId,
-		transactionId: result.trxID,
 		paymentId: paymentID,
+		transactionId: result.trxID,
 		amount,
 	});
-
-	return true;
 };
+
+const updatePaymentStatus = async (
+	paymentID: string,
+	userId: string,
+	paymentStatus: "FAILED" | "CANCELLED",
+) => {
+	return paymentRepo.updatePayment({
+		userId,
+		paymentId: paymentID,
+		status: paymentStatus,
+	});
+};
+
+const getPayment = async (paymentID: string, userId: string) =>
+	paymentRepo.getPayment(paymentID, userId);
+
+const getPayments = async (
+	userId: string,
+	options: { page: number; limit: number },
+) => paymentRepo.getPayments(userId, options);
 
 const paymentService = {
 	createPayment,
 	executePayment,
+	updatePaymentStatus,
+	getPayment,
+	getPayments,
 };
 export default paymentService;

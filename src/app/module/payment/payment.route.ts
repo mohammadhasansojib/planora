@@ -6,12 +6,14 @@ import paymentController from "./payment.controller.js";
 const router = express.Router();
 
 router.get("/test", async (_req, res) => {
-    const idToken = await getBkashIdToken();
+	const idToken = await getBkashIdToken();
 
-    res.json({idToken});
+	res.json({ idToken });
 });
 
 router.post("/create-payment", auth(), paymentController.createPayment);
+
+router.get("/", auth(), paymentController.getPayments);
 
 router.get("/callback", paymentController.callbackPayment);
 

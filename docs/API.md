@@ -915,11 +915,22 @@ creation time.
 - **`GET /api/v1/payments/callback`**
     - auth: false; this is a bKash browser-redirect callback.
     - bKash provides callback values as query parameters.
-    - Successful callbacks execute the payment and persist it only when bKash
-      returns a matching payment ID, transaction ID, and valid amount.
-    - Failure and cancellation callbacks do not execute or persist a payment.
+    - A payment attempt is recorded as `PENDING` after bKash creates checkout.
+    - Successful callbacks execute the payment and mark the attempt
+      `COMPLETED` only when bKash returns a matching payment ID, transaction
+      ID, and valid amount.
+    - Failure and cancellation callbacks update the attempt to `FAILED` or
+      `CANCELLED` without executing the payment.
     - The backend redirects to `BKASH_FRONTEND_REDIRECT_URL` with a canonical
       `status` query value: `success`, `failure`, or `cancelled`.
     - Configure `BKASH_FRONTEND_REDIRECT_URL` to the frontend's
       `/payments/result` route.
     - bKash's `cancel` status is normalized to `cancelled`.
+
+- **`GET /api/v1/payments?page=1&limit=10`**
+    - auth: true
+    - Returns the signed-in user's payment attempts newest first, including
+      pending, completed, failed, and cancelled records.
+    - `page` defaults to `1`; `limit` defaults to `10` and cannot exceed `100`.
+    - Each record includes payment ID, optional transaction ID, amount, status,
+      and timestamps; the response includes pagination metadata.
