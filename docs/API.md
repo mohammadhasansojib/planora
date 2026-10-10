@@ -877,6 +877,7 @@ creation time.
 
 - **`POST /api/v1/payments/create-payment`**
     - auth: true
+    - The frontend must redirect to the returned `bkashURL`.
 
     request body:
     ```json
@@ -911,15 +912,14 @@ creation time.
     }
     ```
 
-- **`POST /api/v1/payments/callback`**
-    - auth: (for now false, but with frontend it will be auth route)
-
-    request body:
-    ```json
-
-    ```
-
-    response: Redicet to payment success page(frontend)
-    ```json
-
-    ```
+- **`GET /api/v1/payments/callback`**
+    - auth: false; this is a bKash browser-redirect callback.
+    - bKash provides callback values as query parameters.
+    - Successful callbacks execute the payment and persist it only when bKash
+      returns a matching payment ID, transaction ID, and valid amount.
+    - Failure and cancellation callbacks do not execute or persist a payment.
+    - The backend redirects to `BKASH_FRONTEND_REDIRECT_URL` with a canonical
+      `status` query value: `success`, `failure`, or `cancelled`.
+    - Configure `BKASH_FRONTEND_REDIRECT_URL` to the frontend's
+      `/payments/result` route.
+    - bKash's `cancel` status is normalized to `cancelled`.
