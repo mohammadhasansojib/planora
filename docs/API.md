@@ -555,13 +555,16 @@ response:
 
 - **`POST /api/v1/tasks`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the project.
+    - An optional sprint must belong to the selected project.
 
     request body:
     ```json
     {
         "title": "My First Task",
         "description": "This is very important",
-        "projectId": "8c6af6af-8dba-472e-853f-81365c014f67"
+        "projectId": "8c6af6af-8dba-472e-853f-81365c014f67",
+        "sprintId": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0"
     }
     ```
 
@@ -579,7 +582,17 @@ response:
                 "title": "My First Task",
                 "description": "This is very important",
                 "createdAt": "2026-09-05T13:56:13.569Z",
-                "updatedAt": "2026-09-05T13:56:13.569Z"
+                "updatedAt": "2026-09-05T13:56:13.569Z",
+                "project": {
+                    "id": "8c6af6af-8dba-472e-853f-81365c014f67",
+                    "name": "My Project"
+                },
+                "sprint": {
+                    "id": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                    "name": "Sprint 1",
+                    "startTime": "2026-09-05T11:46:07.779Z",
+                    "endTime": "2026-09-08T11:46:07.779Z"
+                }
             }
         }
     }
@@ -588,6 +601,8 @@ response:
 
 - **`POST /api/v1/tasks/:taskId/assign`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the task.
+    - The sprint must belong to the task's project.
 
     request body:
     ```json
@@ -601,7 +616,7 @@ response:
     {
         "success": true,
         "message": "Task assigned successfully",
-        "statusCode": 201,
+        "statusCode": 200,
         "data": {
             "task": {
                 "id": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
@@ -610,7 +625,17 @@ response:
                 "title": "My First Task",
                 "description": "This is very important",
                 "createdAt": "2026-09-05T13:56:13.569Z",
-                "updatedAt": "2026-09-05T14:05:17.739Z"
+                "updatedAt": "2026-09-05T14:05:17.739Z",
+                "project": {
+                    "id": "8c6af6af-8dba-472e-853f-81365c014f67",
+                    "name": "My Project"
+                },
+                "sprint": {
+                    "id": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                    "name": "Sprint 1",
+                    "startTime": "2026-09-05T11:46:07.779Z",
+                    "endTime": "2026-09-08T11:46:07.779Z"
+                }
             }
         }
     }
@@ -619,24 +644,32 @@ response:
 
 - **`GET /api/v1/tasks`**
     - auth: true
+    - The user must belong to the requested organization.
     
     queries:
 
     | query | meaning |
     |----------|----------|
-    | page    | page number |
-    | limit    | teams limit in one page |
-    | sortBy    | sort by which field |
-    | order    | in which order, "asc" or "desc" |
-    | term    | search term for title and description |
+    | organizationId | required organization UUID |
+    | page    | page number, defaults to 1 |
+    | limit    | tasks per page, defaults to 10 (maximum 100) |
+    | sortBy    | `createdAt`, `updatedAt`, or `title`; defaults to `createdAt` |
+    | order    | `asc` or `desc`; defaults to `desc` |
+    | term    | optional search term for title and description |
 
     response:
     ```json
     {
         "success": true,
-        "message": "Retrived all tasks successfully",
-        "statusCode": 201,
+        "message": "Retrieved all tasks successfully",
+        "statusCode": 200,
         "data": {
+            "pagination": {
+                "page": 1,
+                "limit": 10,
+                "total": 3,
+                "totalPages": 1
+            },
             "tasks": [
                 {
                     "id": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
@@ -645,7 +678,17 @@ response:
                     "title": "My First Task",
                     "description": "This is very important",
                     "createdAt": "2026-09-05T13:56:13.569Z",
-                    "updatedAt": "2026-09-05T14:05:17.739Z"
+                    "updatedAt": "2026-09-05T14:05:17.739Z",
+                    "project": {
+                        "id": "8c6af6af-8dba-472e-853f-81365c014f67",
+                        "name": "My Project"
+                    },
+                    "sprint": {
+                        "id": "c98aaf86-2f77-4cf5-ac49-236b27d95ac0",
+                        "name": "Sprint 1",
+                        "startTime": "2026-09-05T11:46:07.779Z",
+                        "endTime": "2026-09-08T11:46:07.779Z"
+                    }
                 },
                 {
                     "id": "277e84c4-9f7c-4af9-a7e5-61599ac1741a",
@@ -654,7 +697,12 @@ response:
                     "title": "My Second Task",
                     "description": "This is very important",
                     "createdAt": "2026-09-15T13:27:47.712Z",
-                    "updatedAt": "2026-09-15T13:27:47.712Z"
+                    "updatedAt": "2026-09-15T13:27:47.712Z",
+                    "project": {
+                        "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                        "name": "Another Project"
+                    },
+                    "sprint": null
                 },
                 {
                     "id": "b574afa4-a781-47fb-ac9f-f0e4d83bcd63",
@@ -663,7 +711,12 @@ response:
                     "title": "My Third Task",
                     "description": "This is very important",
                     "createdAt": "2026-09-15T13:27:53.529Z",
-                    "updatedAt": "2026-09-15T13:27:53.529Z"
+                    "updatedAt": "2026-09-15T13:27:53.529Z",
+                    "project": {
+                        "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
+                        "name": "Another Project"
+                    },
+                    "sprint": null
                 }
             ]
         }

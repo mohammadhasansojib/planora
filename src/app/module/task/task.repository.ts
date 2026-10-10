@@ -1,110 +1,156 @@
 import { prisma } from "../../lib/prisma.js";
-import type { ICreateSubtask, ICreateTask, IGetAllTasksOptions } from "./task.interface.js";
+import type {
+	ICreateSubtask,
+	ICreateTask,
+	IGetAllTasksOptions,
+} from "./task.interface.js";
+
+const taskRelations = {
+	project: {
+		select: {
+			id: true,
+			name: true,
+		},
+	},
+	sprint: {
+		select: {
+			id: true,
+			name: true,
+			startTime: true,
+			endTime: true,
+		},
+	},
+} as const;
 
 class TaskRepository {
-    async getProjectById(projectId: string) {
-        const project = await prisma.project.findUnique({
-            where: { id: projectId },
-        });
-        return project;
-    }
+	async getOrganizationMember(organizationId: string, userId: string) {
+		return prisma.organizationMember.findUnique({
+			where: {
+				userId_organizationId: {
+					organizationId,
+					userId,
+				},
+			},
+		});
+	}
 
-    async getSprintById(sprintId: string) {
-        const sprint = await prisma.sprint.findUnique({
-            where: { id: sprintId },
-        });
-        return sprint;
-    }
+	async getTeamById(teamId: string) {
+		return prisma.team.findUnique({
+			where: { id: teamId },
+		});
+	}
 
-    async createTask(taskData: ICreateTask) {
-        const task = await prisma.task.create({
-            data: taskData,
-        });
+	async getProjectById(projectId: string) {
+		const project = await prisma.project.findUnique({
+			where: { id: projectId },
+		});
+		return project;
+	}
 
-        return task;
-    }
+	async getSprintById(sprintId: string) {
+		const sprint = await prisma.sprint.findUnique({
+			where: { id: sprintId },
+		});
+		return sprint;
+	}
 
-    async getTaskById(taskId: string) {
-        const task = await prisma.task.findUnique({
-            where: { id: taskId },
-        });
-        return task;
-    }
+	async createTask(taskData: ICreateTask) {
+		const task = await prisma.task.create({
+			data: taskData,
+			include: taskRelations,
+		});
 
-    async getUserById(userId: string) {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-        });
-        return user;
-    }
+		return task;
+	}
 
-    async createTaskAttachment(fileURL: string, userId: string, taskId: string) {
-        const attachment = await prisma.attachment.create({
-            data: {
-                fileURL,
-                userId,
-                taskId,
-            }
-        });
-        
-        return attachment;
-    }
+	async getTaskById(taskId: string) {
+		const task = await prisma.task.findUnique({
+			where: { id: taskId },
+		});
+		return task;
+	}
 
-    async getTaskByIdWithSprintId(taskId: string, sprintId: string) {
-        const task = await prisma.task.findFirst({
-            where: {
-                id: taskId,
-                sprintId: sprintId,
-            },
-        });
-        return task;
-    }
+	async getUserById(userId: string) {
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+		});
+		return user;
+	}
 
-    async assignTaskToSprint(taskId: string, sprintId: string) {
-        const updatedTask = await prisma.task.update({
-            where: { id: taskId },
-            data: { sprintId: sprintId },
-        });
+	async createTaskAttachment(fileURL: string, userId: string, taskId: string) {
+		const attachment = await prisma.attachment.create({
+			data: {
+				fileURL,
+				userId,
+				taskId,
+			},
+		});
 
-        return updatedTask;
-    }
+		return attachment;
+	}
 
-    async createSubtask(payload: ICreateSubtask) {
-        const subtask = await prisma.subtask.create({
-            data: payload,
-        });
+	async assignTaskToSprint(taskId: string, sprintId: string) {
+		const updatedTask = await prisma.task.update({
+			where: { id: taskId },
+			data: { sprintId: sprintId },
+			include: taskRelations,
+		});
 
-        return subtask;
-    }
+		return updatedTask;
+	}
 
-    async getAllTasks(options: IGetAllTasksOptions) {
-        let skip: number | undefined;
-        if (options.page) skip = options.page - 1;
-        
-        let take: number | undefined;
-        if (options.limit) take = options.limit;
+	async createSubtask(payload: ICreateSubtask) {
+		const subtask = await prisma.subtask.create({
+			data: payload,
+		});
 
-        let orderBy: {} | {createdAt: "asc" | "desc"} = {};
-        if (options.sortBy) {
-            orderBy = {
-                createdAt: options.order || "asc",
-            }
-        }
+		return subtask;
+	}
 
-        const tasks = await prisma.task.findMany({
-            skip,
-            take,
-            orderBy,
-            where: {
-                OR: [
-                    {title: {contains: options.term, mode: "insensitive"}},
-                    {description: {contains: options.term, mode: "insensitive"}},
-                ]
-            }
-        });
+	async getAllTasks(options: IGetAllTasksOptions) {
+		const where = {
+			project: {
+				team: {
+					organizationId: options.organizationId,
+				},
+			},
+			...(options.term
+				? {
+						OR: [
+							{
+								title: { contains: options.term, mode: "insensitive" as const },
+							},
+							{
+								description: {
+									contains: options.term,
+									mode: "insensitive" as const,
+								},
+							},
+						],
+					}
+				: {}),
+		};
+		const [tasks, total] = await Promise.all([
+			prisma.task.findMany({
+				where,
+				include: taskRelations,
+				skip: (options.page - 1) * options.limit,
+				take: options.limit,
+				orderBy: [{ [options.sortBy]: options.order }, { id: "asc" }],
+			}),
+			prisma.task.count({ where }),
+		]);
 
-        return tasks;
-    }
+		return {
+			tasks,
+			pagination: {
+				page: options.page,
+				limit: options.limit,
+				total,
+				totalPages: Math.ceil(total / options.limit),
+			},
+		};
+	}
 }
 
 const taskRepo = new TaskRepository();

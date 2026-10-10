@@ -1,23 +1,21 @@
-
-
-
 export interface ICreateTask {
-    title: string
-    description?: string
-    sprintId?: string
-    projectId: string
+	title: string;
+	description?: string;
+	sprintId?: string;
+	projectId: string;
 }
 
 export interface ICreateSubtask {
-    title: string
-    description?: string
-    taskId: string
+	title: string;
+	description?: string;
+	taskId: string;
 }
 
 export interface IGetAllTasksOptions {
-    page?: number
-    limit?: number
-    sortBy?: "createdAt"
-    order?: "asc" | "desc"
-    term?: string
+	page: number;
+	limit: number;
+	organizationId: string;
+	sortBy: "createdAt" | "updatedAt" | "title";
+	order: "asc" | "desc";
+	term?: string;
 }
