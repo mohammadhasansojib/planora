@@ -59,11 +59,12 @@ const assignTaskToSprint = catchAsync(async (req: Request, res: Response) => {
 
 // subtask
 const createSubtask = catchAsync(async (req: Request, res: Response) => {
+	const { id: requestingUserId } = req.user as JwtPayload;
 	const { taskId } = req.params;
 
 	const validData = CreateSubtaskSchema.safeParse({
-		taskId,
 		...req.body,
+		taskId,
 	});
 	if (!validData.success) {
 		const errMessage = validData.error.issues
@@ -73,10 +74,10 @@ const createSubtask = catchAsync(async (req: Request, res: Response) => {
 		throw new BadRequestError(errMessage);
 	}
 
-	const subtask = await taskService.createSubtask({
-		taskId,
-		...req.body,
-	});
+	const subtask = await taskService.createSubtask(
+		validData.data,
+		requestingUserId,
+	);
 
 	sendResponse(res, {
 		success: true,

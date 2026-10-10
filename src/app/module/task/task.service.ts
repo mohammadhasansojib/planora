@@ -81,17 +81,26 @@ const assignTaskToSprint = async (
 	return taskRepo.assignTaskToSprint(taskId, sprintId);
 };
 
-const createSubtask = async (payload: ICreateSubtask) => {
-	// check if the task exists
+const createSubtask = async (
+	payload: ICreateSubtask,
+	requestingUserId: string,
+) => {
 	const task = await taskRepo.getTaskById(payload.taskId);
 	if (!task) {
-		throw new NotFoundError("task not found");
+		throw new NotFoundError("Task not found");
 	}
 
-	// create subtask
-	const subtask = await taskRepo.createSubtask(payload);
+	const project = await taskRepo.getProjectById(task.projectId);
+	if (!project) {
+		throw new NotFoundError("Project not found");
+	}
+	const team = await taskRepo.getTeamById(project.teamId);
+	if (!team) {
+		throw new NotFoundError("Project team not found");
+	}
+	await ensureOrganizationMember(team.organizationId, requestingUserId);
 
-	return subtask;
+	return taskRepo.createSubtask(payload);
 };
 
 const addAttachment = async (

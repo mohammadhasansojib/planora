@@ -6,6 +6,19 @@ import type {
 } from "./task.interface.js";
 
 const taskRelations = {
+	subtasks: {
+		select: {
+			id: true,
+			title: true,
+			description: true,
+			taskId: true,
+			createdAt: true,
+			updatedAt: true,
+		},
+		orderBy: {
+			createdAt: "asc",
+		},
+	},
 	project: {
 		select: {
 			id: true,

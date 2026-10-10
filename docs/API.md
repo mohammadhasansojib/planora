@@ -592,7 +592,8 @@ response:
                     "name": "Sprint 1",
                     "startTime": "2026-09-05T11:46:07.779Z",
                     "endTime": "2026-09-08T11:46:07.779Z"
-                }
+                },
+                "subtasks": []
             }
         }
     }
@@ -635,7 +636,8 @@ response:
                     "name": "Sprint 1",
                     "startTime": "2026-09-05T11:46:07.779Z",
                     "endTime": "2026-09-08T11:46:07.779Z"
-                }
+                },
+                "subtasks": []
             }
         }
     }
@@ -688,7 +690,17 @@ response:
                         "name": "Sprint 1",
                         "startTime": "2026-09-05T11:46:07.779Z",
                         "endTime": "2026-09-08T11:46:07.779Z"
-                    }
+                    },
+                    "subtasks": [
+                        {
+                            "id": "44bdef07-f736-4e67-acc0-f28844f7e81a",
+                            "title": "First Subtask",
+                            "description": "Break the task into a smaller step",
+                            "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
+                            "createdAt": "2026-09-05T15:10:38.493Z",
+                            "updatedAt": "2026-09-05T15:10:38.493Z"
+                        }
+                    ]
                 },
                 {
                     "id": "277e84c4-9f7c-4af9-a7e5-61599ac1741a",
@@ -702,7 +714,8 @@ response:
                         "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
                         "name": "Another Project"
                     },
-                    "sprint": null
+                    "sprint": null,
+                    "subtasks": []
                 },
                 {
                     "id": "b574afa4-a781-47fb-ac9f-f0e4d83bcd63",
@@ -716,7 +729,8 @@ response:
                         "id": "3f637321-b016-40e6-a14c-a9b5dd8e1339",
                         "name": "Another Project"
                     },
-                    "sprint": null
+                    "sprint": null,
+                    "subtasks": []
                 }
             ]
         }
@@ -727,6 +741,9 @@ response:
 
 - **`POST /api/v1/tasks/:taskId/subtasks`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the task.
+    - Subtask titles are trimmed and required (maximum 200 characters).
+    - Subtask descriptions are optional (maximum 2000 characters).
 
     request body:
     ```json
@@ -754,6 +771,8 @@ response:
         }
     }
     ```
+
+`GET /api/v1/tasks` includes each task's subtasks, ordered by creation time.
 
 - **`POST /api/v1/tasks/:taskId/attachment`**
     - auth: true

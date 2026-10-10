@@ -23,8 +23,8 @@ export const AssignTaskToSprintSchema = z.object({
 });
 
 export const CreateSubtaskSchema = z.object({
-	title: z.string().min(1, "Title is required"),
-	description: z.string().optional(),
+	title: z.string().trim().min(1, "Title is required").max(200),
+	description: z.string().trim().max(2000).optional(),
 	taskId: z.uuid({
 		error: "Invalid taskId",
 	}),
