@@ -4,6 +4,7 @@ import commentController from "./comment.controller.js";
 
 const router = express.Router();
 
+router.get("/", auth(), commentController.getCommentsForTask);
 router.post("/", auth(), commentController.createComment);
 
 const commentRouter = router;
