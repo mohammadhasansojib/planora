@@ -19,6 +19,20 @@ const taskRelations = {
 			createdAt: "asc",
 		},
 	},
+	attachments: {
+		select: {
+			id: true,
+			taskId: true,
+			userId: true,
+			originalName: true,
+			fileURL: true,
+			createdAt: true,
+			updatedAt: true,
+		},
+		orderBy: {
+			createdAt: "asc",
+		},
+	},
 	project: {
 		select: {
 			id: true,
@@ -90,10 +104,16 @@ class TaskRepository {
 		return user;
 	}
 
-	async createTaskAttachment(fileURL: string, userId: string, taskId: string) {
+	async createTaskAttachment(
+		fileURL: string,
+		originalName: string,
+		userId: string,
+		taskId: string,
+	) {
 		const attachment = await prisma.attachment.create({
 			data: {
 				fileURL,
+				originalName,
 				userId,
 				taskId,
 			},

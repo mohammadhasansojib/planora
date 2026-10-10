@@ -92,21 +92,20 @@ const createSubtask = catchAsync(async (req: Request, res: Response) => {
 const addAttachment = catchAsync(async (req: Request, res: Response) => {
 	const file = req.file;
 	if (!file) {
-		throw new BadRequestError("file not found");
+		throw new BadRequestError("Attachment file is required");
 	}
 
 	const taskId = req.params.taskId;
 	if (!(typeof taskId === "string") || !taskId) {
-		throw new BadRequestError("invalid task id");
+		throw new BadRequestError("Invalid task ID");
 	}
 
-	const userId = req.user?.id;
-	if (!userId) {
-		throw new BadRequestError("invalid user id");
-	}
-
-	// const attachment = await uploadToCloudinary(file.buffer);
-	const attachment = await taskService.addAttachment(file, taskId, userId);
+	const { id: requestingUserId } = req.user as JwtPayload;
+	const attachment = await taskService.addAttachment(
+		file,
+		taskId,
+		requestingUserId,
+	);
 
 	sendResponse(res, {
 		success: true,

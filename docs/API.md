@@ -772,16 +772,18 @@ response:
     }
     ```
 
-`GET /api/v1/tasks` includes each task's subtasks, ordered by creation time.
+`GET /api/v1/tasks` includes each task's subtasks and attachments, ordered by
+creation time.
 
 - **`POST /api/v1/tasks/:taskId/attachment`**
     - auth: true
+    - The signed-in user must belong to the organization that owns the task.
+    - Accepts one JPG, JPEG, PNG, or WEBP image up to 5 MB as multipart form data.
 
     request body:
-    ```json
-    {
-        "attachment": `file here`
-    }
+    ```text
+    Content-Type: multipart/form-data
+    attachment: <file>
     ```
 
     response:
@@ -795,6 +797,7 @@ response:
                 "id": "d41ca769-cb2a-4116-af99-32ab3cfb3987",
                 "taskId": "bd4471de-4b70-4ed7-9ae8-371676c9620b",
                 "userId": "acc950d1-32d4-4764-adaf-5a311f022acd",
+                "originalName": "design-mockup.png",
                 "fileURL": "https://res.cloudinary.com/awmp85xk/image/upload/v1789138256/uploads/y5rcmwxrp48f4bfijgff.png",
                 "createdAt": "2026-09-11T14:47:43.383Z",
                 "updatedAt": "2026-09-11T14:47:43.383Z"

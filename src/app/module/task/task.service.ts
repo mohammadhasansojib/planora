@@ -106,31 +106,37 @@ const createSubtask = async (
 const addAttachment = async (
 	file: Express.Multer.File,
 	taskId: string,
-	userId: string,
+	requestingUserId: string,
 ) => {
-	// check the user exist
-	const user = await taskRepo.getUserById(userId);
-	if (!user) {
-		throw new BadRequestError("user not found");
-	}
-
-	// check the task exist
 	const task = await taskRepo.getTaskById(taskId);
 	if (!task) {
-		throw new BadRequestError("task not found");
+		throw new NotFoundError("Task not found");
 	}
 
-	// upload the file
+	const project = await taskRepo.getProjectById(task.projectId);
+	if (!project) {
+		throw new NotFoundError("Project not found");
+	}
+	const team = await taskRepo.getTeamById(project.teamId);
+	if (!team) {
+		throw new NotFoundError("Project team not found");
+	}
+	await ensureOrganizationMember(team.organizationId, requestingUserId);
+
+	const user = await taskRepo.getUserById(requestingUserId);
+	if (!user) {
+		throw new NotFoundError("User not found");
+	}
+
 	const uploadedFile = await uploadToCloudinary(file.buffer);
 
-	// store attachment info in Database
 	const attachment = await taskRepo.createTaskAttachment(
 		uploadedFile.secure_url,
+		file.originalname,
 		user.id,
 		task.id,
 	);
 
-	// return the attachment info
 	return attachment;
 };
 
